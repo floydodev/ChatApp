@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public interface Channel {
+public interface ChannelDAO {
 
 	public static String defaultName = "default";
 	

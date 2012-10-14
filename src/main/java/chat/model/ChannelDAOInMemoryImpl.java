@@ -7,17 +7,17 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 
-public class InMemoryChannelImpl implements Channel {
+public class ChannelDAOInMemoryImpl implements ChannelDAO {
 	
 	private NavigableMap<Integer, ChatMessage> messageMap = new TreeMap<Integer, ChatMessage>();
 	private List<User> users = new ArrayList<User>();
 	private String name;
 	
-	public InMemoryChannelImpl() {
-		this.name= Channel.defaultName;
+	public ChannelDAOInMemoryImpl() {
+		this.name= ChannelDAO.defaultName;
 	}
 
-	public InMemoryChannelImpl(String name) {
+	public ChannelDAOInMemoryImpl(String name) {
 		this.name = name ;
 	}
 	public String getName() {

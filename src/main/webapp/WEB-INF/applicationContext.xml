@@ -19,6 +19,6 @@
 	 	<constructor-arg ref="defaultChannel"/>
 	 </bean>
 
-	<bean id="defaultChannel" class="chat.model.InMemoryChannelImpl" />
+	<bean id="defaultChannel" class="chat.model.ChannelDAOInMemoryImpl" />
 
 </beans>

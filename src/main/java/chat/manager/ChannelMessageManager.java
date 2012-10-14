@@ -3,19 +3,19 @@ package chat.manager;
 import java.util.HashMap;
 import java.util.Map;
 
-import chat.model.Channel;
+import chat.model.ChannelDAO;
 import chat.model.ChatMessage;
 
 public class ChannelMessageManager {
 	
-	private Map<String, Channel> channelMap = new HashMap<String, Channel>();
+	private Map<String, ChannelDAO> channelMap = new HashMap<String, ChannelDAO>();
 	
-	public ChannelMessageManager(Channel channel) {
+	public ChannelMessageManager(ChannelDAO channel) {
 		channelMap.put(channel.getName(), channel);
 	}
 	
 	public void addMessage(ChatMessage chatMessage) {
-		addMessage(Channel.defaultName, chatMessage);
+		addMessage(ChannelDAO.defaultName, chatMessage);
 	}
 
 	public void addMessage(String channelId, ChatMessage chatMessage) {
@@ -23,7 +23,7 @@ public class ChannelMessageManager {
 	}
 	
 	public Map<Integer, ChatMessage> getMessages(int lastMessageId) {
-		return getMessages(lastMessageId, Channel.defaultName);
+		return getMessages(lastMessageId, ChannelDAO.defaultName);
 	}
 	
 	public Map<Integer, ChatMessage> getMessages(int lastMessageId, String channelId) {
@@ -31,7 +31,7 @@ public class ChannelMessageManager {
 	}
 	
 	public Map<Integer, ChatMessage> getMessages() {
-		return getMessages(Channel.defaultName);
+		return getMessages(ChannelDAO.defaultName);
 	}
 	
 	public Map<Integer, ChatMessage> getMessages(String channelId) {
