@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import chat.manager.ChannelMessageManager;
 import chat.model.ChatMessage;
-import chat.model.InMemoryChannelImpl;
+import chat.model.ChannelDAOInMemoryImpl;
 
 public class ChatControllerTest {
 
@@ -24,7 +24,7 @@ public class ChatControllerTest {
 
 	@Test
 	public void test_ReturnsOnlyTenMessagesForFirstTimeRequest() {
-		ChannelMessageManager channelMsgMgr = new ChannelMessageManager(new InMemoryChannelImpl());
+		ChannelMessageManager channelMsgMgr = new ChannelMessageManager(new ChannelDAOInMemoryImpl());
 		int expectedNumMessages = 10;
 		int testMessages = 15;
 		for (int i = 1; i <= testMessages; i++) {
