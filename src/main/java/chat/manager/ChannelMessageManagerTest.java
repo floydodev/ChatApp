@@ -2,12 +2,15 @@ package chat.manager;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import chat.model.ChatMessage;
 import chat.model.InMemoryChannelImpl;
+import chat.model.User;
 
 public class ChannelMessageManagerTest {
 
@@ -26,13 +29,20 @@ public class ChannelMessageManagerTest {
 	}
 	
 	@Test
-	public void test_SingleMessageIsAdded() {
+	public void test_SingleMessageIsAddedAndStored() {
 		ChannelMessageManager channelMsgMgr = new ChannelMessageManager(new InMemoryChannelImpl());
-		channelMsgMgr.addMessage(new ChatMessage(null, null, null));
+		String testText = "hey there";
+		User testUser = new User("Mr. Test", "tester@test.com");
+		ChatMessage testChatMessage = new ChatMessage(testText, Calendar.getInstance().getTime(), testUser);
+		
+		assertEquals(0, channelMsgMgr.getMessages().size());
+		
+		channelMsgMgr.addMessage(testChatMessage);
 		assertEquals(1, channelMsgMgr.getMessages().size());
+		assertTrue(channelMsgMgr.getMessages().containsValue(testChatMessage));
 	}
-	
-	
+
+
 	@Test
 	public void test_MultipleMessagesAreAdded() {
 		ChannelMessageManager channelMsgMgr = new ChannelMessageManager(new InMemoryChannelImpl());

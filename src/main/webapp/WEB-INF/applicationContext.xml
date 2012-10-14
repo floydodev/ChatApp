@@ -12,13 +12,13 @@
 	<context:component-scan base-package="chat" />
 
 	 <bean id="channelMessageManager" class="chat.manager.ChannelMessageManager" >
-	 	<constructor-arg ref="defaultChannel"/>
+	 	<constructor-arg ref="theDefaultChannel"/>
 	 </bean>
 	 
 	 <bean id="channelUserManager" class="chat.manager.ChannelUserManager" >
-	 	<constructor-arg ref="defaultChannel"/>
+	 	<constructor-arg ref="theDefaultChannel"/>
 	 </bean>
 
-	<bean id="defaultChannel" class="chat.model.InMemoryChannelImpl" />
+	<bean id="theDefaultChannel" class="chat.model.InMemoryChannelImpl" />
 
 </beans>
