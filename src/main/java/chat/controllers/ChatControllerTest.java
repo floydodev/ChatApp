@@ -27,7 +27,6 @@ public class ChatControllerTest {
 		ChannelMessageManager channelMsgMgr = new ChannelMessageManager(new InMemoryChannelImpl());
 		int expectedNumMessages = 10;
 		int testMessages = 15;
-		int lastMessageId = -1; // Means client has received no messages so far
 		for (int i = 1; i <= testMessages; i++) {
 			channelMsgMgr.addMessage(new ChatMessage("message" + i, null, null));
 		}		
