@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>Chat-a-holics Chat Service</title>
+<style>
+.form-container{margin:10px 0;padding:0;}
+.form-container form fieldset{border:1px solid #ececec;margin:10px;padding:10px;background:#FFF;}
+.form-container form fieldset div,.form-row{margin-bottom:5px;clear:both;padding:3px 5px;}
+.form-container form label{font-size:14px;line-height:19px;margin-right:5px;padding-right:5px;width:115px;display:block;float:left;
+							text-align:right;position:relative;margin-top:2px;clear:both;font-weight:700;}
+.form-container form label span{color:#900;font-weight:700;}
+.form-container input,.form-container textarea,.form-container select{font-size:12px;background:#FFF;border:1px solid #B0ADAA;padding:3px;}
+.form-container input[type="text"]{background:#FFF;}
+div.form-container label.error,div.form-container span.error{color:#C00;font-size:13px;margin-left:125px;}
+div.form-container input.error{background-color:#FEF;border-color:#C00;}
+.form-container input:focus,.form-container input.error:focus,.form-container textarea:focus{font-size:12px;background:#FFF;
+																										border:1px solid #9B9793;padding:3px;}
+div.form-container span.error {margin-left: 10px;}
+h2{font-size:24px;color:#000;margin:0 0 5px;padding:5px 0 0; font-weight: normal;}
+h2.page-title{text-align:left; margin-left: 10px;margin-bottom: 10px; padding: 10px 0 0; text-transform: capitalize;}
+</style>
+</head>
+<body>
+<h2 class="page-title">Chat-a-holics Login</h2>
+<div class="form-container" id="registerform">
+<form name="myForm" action="loginServlet.do" method="POST" id="login_form">
+<fieldset>
+	<div><label>Display Name :</label><input type="text" name="userDisplayName" id="user_display_name" value="" size="32" ></div>
+	<div><label>Email Address:</label><input type="text" name="userEmailAddress" id="user_email_address" value="" size="32" ></div>
+	<div><label></label><input type="submit" value="Login" id="btn-submit" 
+								style="background: #FDF004; border: 1px solid #000; 
+								color: #000; font-weight: bold; 
+								font-family: Arial; cursor:pointer;"></div>
+</fieldset>
+</form>
+</div>
+
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script language="javascript" src="js/chat.ui.jquery.js"></script>
+</body>
+</html>
