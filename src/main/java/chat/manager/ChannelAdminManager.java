@@ -1,13 +1,22 @@
 package chat.manager;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import chat.model.ChannelDAO;
-import chat.model.User;
+import chat.dao.ChannelDAO;
+import chat.model.Channel;
 
 public class ChannelAdminManager {
 	
-	// TODO
+	private ChannelDAO channelDAO;
+	
+	public ChannelAdminManager(ChannelDAO channelDAO) {
+		this.channelDAO = channelDAO;
+	}
+	
+	public void addChannel(String channelId) {
+		channelDAO.addChannel(new Channel(channelId));
+	}
+
+	public boolean removeChannel(String channelId) {
+		return channelDAO.removeChannel(channelId);
+	}
 	
 }

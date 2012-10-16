@@ -225,6 +225,42 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
         <version>2.5.2</version>
+        <configuration>
+          <instrumentation>
+            <excludes>
+              <exclude>chat/**/*Test.class</exclude>
+            </excludes>
+          </instrumentation>
+          <check>
+            <branchRate>70</branchRate>
+            <lineRate>70</lineRate>
+            <haltOnFailure>true</haltOnFailure>
+            <totalBranchRate>70</totalBranchRate>
+            <totalLineRate>70</totalLineRate>
+            <packageLineRate>70</packageLineRate>
+            <packageBranchRate>70</packageBranchRate>
+<!--             <regexes>
+              <regex>
+                <pattern>chat.model.*</pattern>
+                <branchRate>70</branchRate>
+                <lineRate>70</lineRate>
+              </regex>
+              <regex>
+                <pattern>chat.manager.*</pattern>
+                <branchRate>70</branchRate>
+                <lineRate>70</lineRate>
+              </regex>
+            </regexes> -->
+          </check>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>clean</goal>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

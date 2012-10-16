@@ -35,28 +35,35 @@ public class ChatController {
 	public String processReceivedMessage(@RequestParam(value="chatMessage", required=true) String message,
 											@ModelAttribute("user") User user) {
 		log.info("Received message=" + message);
-		ChatMessage chatMessage = new ChatMessage(message, Calendar.getInstance().getTime(), user);
-		channelMessageManager.addMessage(chatMessage);
+		channelMessageManager.addMessage(new ChatMessage(message, Calendar.getInstance().getTime(), user));
+		return "chatHome";
+	}
+	
+	@RequestMapping(value="/send", method=RequestMethod.POST)
+	public String processReceivedMessage_New(@RequestParam(value="chatMessage", required=true) String message,
+											@ModelAttribute("user") User user) {
+		log.info("Received message=" + message);
+		channelMessageManager.addMessage(message, Calendar.getInstance().getTime(), user);
 		return "chatHome";
 	}
 
 	@RequestMapping(value="/poll", method=RequestMethod.POST)
-	public @ResponseBody Map<Integer, ChatMessage> pollForMessages
+	public @ResponseBody Map<Integer, ChatMessage> pollForMessages_New
 				(@RequestParam(value="lastMessageId", required=true) int lastMessageId, @ModelAttribute("user") User user) {
 		
 		//log.info("Received lastMessageId=" + lastMessageId);
 		Map<Integer, ChatMessage> messageMap 
-				= lastMessageId == -1 ? processFirstTimePoll(user) : processRegularPoll(user, lastMessageId);
+				= lastMessageId == -1 ? processFirstTimePoll_New(user) : processRegularPoll(user, lastMessageId);
 		return messageMap;
 	}
-
+	
 	private Map<Integer, ChatMessage>  processRegularPoll(User user, int lastMessageId) {
 		Map<Integer, ChatMessage> messageMap = new HashMap<Integer, ChatMessage>();
 		// TODO what about zero-range check?
 		int numMessagesPending = ChatMessage.lastMessageId() - lastMessageId; 
 		if ( numMessagesPending > 0 ) {
 			log.info("(" + user.getDisplayName() + " ) Polling for new messages. " + numMessagesPending + " messages pending");
-			messageMap = channelMessageManager.getMessages(lastMessageId);
+			messageMap = channelMessageManager.getMessagesSince(lastMessageId);
 		} else {
 			log.info("(" + user.getDisplayName() + " ) Polling for new messages. No new messages");
 		}
@@ -66,19 +73,36 @@ public class ChatController {
 	/*
 	 * first time poll, send back last 10 messages from this channel
 	 */
-	public Map<Integer, ChatMessage> processFirstTimePoll(User user) {
+	private Map<Integer, ChatMessage> processFirstTimePoll_New(User user) {
 		
-		Map<Integer, ChatMessage> messageMap = new HashMap<Integer, ChatMessage>();
 		log.info("(" + (user == null ? "Unknown" : user.getDisplayName()) + " ) First time poll or perhaps a page reset. So send back last 10 messages");
-		if (ChatMessage.lastMessageId() > 0) {
-			int sinceMessageId = (ChatMessage.lastMessageId() < 10 ? 0: (ChatMessage.lastMessageId() - 10));
-			messageMap = channelMessageManager.getMessages(sinceMessageId);
-		}
-		return messageMap;
+		return channelMessageManager.getLastXMessages(10);
 	}
-	
+
 	public void setChannelManager(ChannelMessageManager channelMessageManager) {
 		this.channelMessageManager = channelMessageManager;
 	}
 	
+//	@RequestMapping(value="/poll", method=RequestMethod.POST)
+//	public @ResponseBody Map<Integer, ChatMessage> pollForMessages
+//				(@RequestParam(value="lastMessageId", required=true) int lastMessageId, @ModelAttribute("user") User user) {
+//		
+//		//log.info("Received lastMessageId=" + lastMessageId);
+//		Map<Integer, ChatMessage> messageMap 
+//				= lastMessageId == -1 ? processFirstTimePoll(user) : processRegularPoll(user, lastMessageId);
+//		return messageMap;
+//	}
+	
+//	private Map<Integer, ChatMessage> processFirstTimePoll(User user) {
+//		
+//		Map<Integer, ChatMessage> messageMap = new HashMap<Integer, ChatMessage>();
+//		log.info("(" + (user == null ? "Unknown" : user.getDisplayName()) + " ) First time poll or perhaps a page reset. So send back last 10 messages");
+//		if (ChatMessage.lastMessageId() > 0) {
+//			int sinceMessageId = (ChatMessage.lastMessageId() < 10 ? 0: (ChatMessage.lastMessageId() - 10));
+//			messageMap = channelMessageManager.getMessagesSince(sinceMessageId);
+//		}
+//		return messageMap;
+//	}
+	
+
 }

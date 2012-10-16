@@ -3,30 +3,38 @@ package chat.model;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class ChatMessage {
 
-	@Override
-	public String toString() {
-		return "ChatMessage [text=" + text + ", timestamp=" + timestamp
-				+ ", user=" + user + ", messageId=" + messageId + "]";
-	}
-
+	private final static Log log = LogFactory.getLog(ChatMessage.class); 
+	
 	private String text;
 	private Date timestamp;
 	private User user;
 	private int messageId;
+	
 	private static AtomicInteger messageIdFountain = new AtomicInteger();
+
+	public static int lastMessageId() {
+		return messageIdFountain.get();
+	}
 	
 	public ChatMessage(String text, Date timestamp, User user) {
-		super();
+		//super();
 		this.text = text;
 		this.timestamp = timestamp;
 		this.user = user;
 		this.messageId = messageIdFountain.incrementAndGet();
+		log.info("Message created with messageId=" + messageId); 
 	}
-	
-	public static int lastMessageId() {
-		return messageIdFountain.get();
+
+	public ChatMessage(String text, Date timestamp, User user, int messageId) {
+		this.text = text;
+		this.timestamp = timestamp;
+		this.user = user;
+		this.messageId = messageId;
 	}
 
 	public int getMessageId() {
@@ -45,8 +53,50 @@ public class ChatMessage {
 		return user;
 	}
 
-	public static AtomicInteger getMessageIdFountain() {
-		return messageIdFountain;
+	@Override
+	public String toString() {
+		return "ChatMessage [text=" + text + ", timestamp=" + timestamp
+				+ ", user=" + user + ", messageId=" + messageId + "]";
 	}
 	
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + messageId;
+//		result = prime * result + ((text == null) ? 0 : text.hashCode());
+//		result = prime * result
+//				+ ((timestamp == null) ? 0 : timestamp.hashCode());
+//		result = prime * result + ((user == null) ? 0 : user.hashCode());
+//		return result;
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		ChatMessage other = (ChatMessage) obj;
+//		if (messageId != other.messageId)
+//			return false;
+//		if (text == null) {
+//			if (other.text != null)
+//				return false;
+//		} else if (!text.equals(other.text))
+//			return false;
+//		if (timestamp == null) {
+//			if (other.timestamp != null)
+//				return false;
+//		} else if (!timestamp.equals(other.timestamp))
+//			return false;
+//		if (user == null) {
+//			if (other.user != null)
+//				return false;
+//		} else if (!user.equals(other.user))
+//			return false;
+//		return true;
+//	}	
 }
