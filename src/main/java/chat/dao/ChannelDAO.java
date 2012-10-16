@@ -11,9 +11,6 @@ import chat.model.User;
 
 public interface ChannelDAO {
 
-	// TODO remove after refactor
-	public void addMessage(String channelName, ChatMessage message);
-	
 	public void addMessage(String channelId, String message, Date date,	User user);
 
 	public Map<Integer, ChatMessage> getMessages(String channelId);

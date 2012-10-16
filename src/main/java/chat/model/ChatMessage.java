@@ -15,20 +15,20 @@ public class ChatMessage {
 	private User user;
 	private int messageId;
 	
-	private static AtomicInteger messageIdFountain = new AtomicInteger();
-
-	public static int lastMessageId() {
-		return messageIdFountain.get();
-	}
+//	private static AtomicInteger messageIdFountain = new AtomicInteger();
+//
+//	public static int lastMessageId() {
+//		return messageIdFountain.get();
+//	}
 	
-	public ChatMessage(String text, Date timestamp, User user) {
-		//super();
-		this.text = text;
-		this.timestamp = timestamp;
-		this.user = user;
-		this.messageId = messageIdFountain.incrementAndGet();
-		log.info("Message created with messageId=" + messageId); 
-	}
+//	public ChatMessage(String text, Date timestamp, User user) {
+//		//super();
+//		this.text = text;
+//		this.timestamp = timestamp;
+//		this.user = user;
+//		this.messageId = messageIdFountain.incrementAndGet();
+//		log.info("Message created with messageId=" + messageId); 
+//	}
 
 	public ChatMessage(String text, Date timestamp, User user, int messageId) {
 		this.text = text;

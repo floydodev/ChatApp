@@ -59,14 +59,6 @@ public class ChannelMessageManager {
 		return messageMap;
 	}
 	
-	public void addMessage(ChatMessage chatMessage) {
-		addMessage(Channel.DEFAULT_NAME, chatMessage);
-	}
-
-	public void addMessage(String channelId, ChatMessage chatMessage) {
-		channelDAO.addMessage(channelId, chatMessage);
-	}
-	
 	public Channel getChannel() {
 		return channelDAO.getChannel(Channel.DEFAULT_NAME);
 	}

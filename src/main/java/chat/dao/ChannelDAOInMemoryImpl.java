@@ -19,10 +19,6 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 	}
 	
 	// Channel Message Management methods
-	// TODO remove me after refactoring of Channel + addMessage methods
-	public void addMessage(String channelId, ChatMessage message) {
-		channelMap.get(channelId).addMessage(message);
-	}
 
 	public void addMessage(String channelId, String message, Date date,
 			User user) {

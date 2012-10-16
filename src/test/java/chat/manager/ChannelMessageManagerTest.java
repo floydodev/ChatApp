@@ -15,45 +15,51 @@ import chat.model.ChatMessage;
 import chat.model.User;
 
 public class ChannelMessageManagerTest {
+	
+	private ChannelMessageManager channelMsgMgr; 
 
 	@Before
 	public void setUp() throws Exception {
+		channelMsgMgr = new ChannelMessageManager(new ChannelDAOInMemoryImpl(new Channel()));
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		channelMsgMgr = null;
 	}
 
 	@Test
 	public void test_NoMessagePresentInNewMgr() {
-		ChannelMessageManager channelMsgMgr 
-									= new ChannelMessageManager(new ChannelDAOInMemoryImpl(new Channel()));
+
 		assertEquals(0, channelMsgMgr.getMessagesSince(-1).size());
 	}
 	
 	@Test
 	public void test_SingleMessageIsAddedAndStored() {
-		ChannelMessageManager channelMsgMgr 
-									= new ChannelMessageManager(new ChannelDAOInMemoryImpl(new Channel()));
 		String testText = "hey there";
 		User testUser = new User("Mr. Test", "tester@test.com");
-		ChatMessage testChatMessage = new ChatMessage(testText, Calendar.getInstance().getTime(), testUser);
+		ChatMessage testChatMessage = new ChatMessage(testText, Calendar.getInstance().getTime(), testUser, 0);
 		
 		assertEquals(0, channelMsgMgr.getMessages().size());
 		
-		channelMsgMgr.addMessage(testChatMessage);
+		// Assert message contents match
+		channelMsgMgr.addMessage(testChatMessage.getText(), testChatMessage.getTimestamp(), testChatMessage.getUser());
 		assertEquals(1, channelMsgMgr.getMessages().size());
-		assertTrue(channelMsgMgr.getMessages().containsValue(testChatMessage));
+		for (Integer key : channelMsgMgr.getMessages().keySet()) {
+			ChatMessage chatMessage = channelMsgMgr.getMessages().get(key);
+			assertEquals(testChatMessage.getText(), chatMessage.getText());
+			assertEquals(testChatMessage.getTimestamp(), chatMessage.getTimestamp());
+			assertEquals(testChatMessage.getUser(), chatMessage.getUser());
+		}
 	}
 
 
 	@Test
 	public void test_MultipleMessagesAreAdded() {
-		ChannelMessageManager channelMsgMgr 
-									= new ChannelMessageManager(new ChannelDAOInMemoryImpl(new Channel()));
+
 		int expectedNumMessages = 5;
 		for (int i = 1; i <= expectedNumMessages; i++) {
-			channelMsgMgr.addMessage(new ChatMessage("message" + i, null, null));
+			channelMsgMgr.addMessage("message" + i, Calendar.getInstance().getTime(), null);
 		}
 		assertEquals(expectedNumMessages, channelMsgMgr.getMessages().size());
 	}
