@@ -24,6 +24,8 @@ public interface ChannelDAO {
 
 	public boolean removeUser(String channelId, User user);
 	
+	//public User getUser(String channelId, String emailId);
+	
 	public List<User> getUsers(String channelId);
 
 	public void addChannel(Channel channel);

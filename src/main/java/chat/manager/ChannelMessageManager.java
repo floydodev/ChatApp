@@ -45,23 +45,15 @@ public class ChannelMessageManager {
 		return getLastXMessages(Channel.DEFAULT_NAME, i);
 	}
 
-//	public Map<Integer, ChatMessage> getLastXMessages(String channelId, int i) {
-//		Map<Integer, ChatMessage> messageMap = new HashMap<Integer, ChatMessage>();
-//		if (channelDAO.getChannel(channelId).lastMessageId() > 0) {
-//			int sinceMessageId = 
-//					(channelDAO.getChannel(channelId).lastMessageId() < 10 ? 0
-//							: (channelDAO.getChannel(channelId).lastMessageId() - 10));
-//			messageMap = channelDAO.getMessagesSince(channelId, sinceMessageId);
-//		}
-//		return messageMap;
-//	}
-
 	public Map<Integer, ChatMessage> getLastXMessages(String channelId, int i) {
 		Map<Integer, ChatMessage> messageMap = new HashMap<Integer, ChatMessage>();
-		if (ChatMessage.lastMessageId() > 0) {
-			int sinceMessageId = 
-					(ChatMessage.lastMessageId() < 10 ? 0
-							: (ChatMessage.lastMessageId() - 10));
+		int lastMessageId = getChannel(channelId).getLastMessageId();
+		// after this point getLastMessageId may still change before we do sinceMessageId 
+		// calculation. So a local variable is used to avoid threading issues.
+		// Any "missed" message will be picked up when client polls next time around
+		// i.e. any incoming message that bumped "lastMessageId" whilst this code executed
+		if (lastMessageId > 0) {
+			int sinceMessageId = lastMessageId < 10 ? 0 : lastMessageId - 10;
 			messageMap = channelDAO.getMessagesSince(channelId, sinceMessageId);
 		}
 		return messageMap;
@@ -74,4 +66,13 @@ public class ChannelMessageManager {
 	public void addMessage(String channelId, ChatMessage chatMessage) {
 		channelDAO.addMessage(channelId, chatMessage);
 	}
+	
+	public Channel getChannel() {
+		return channelDAO.getChannel(Channel.DEFAULT_NAME);
+	}
+	
+	public Channel getChannel(String channelId) {
+		return channelDAO.getChannel(channelId);
+	}
+
 }

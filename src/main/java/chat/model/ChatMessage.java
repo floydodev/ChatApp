@@ -35,6 +35,7 @@ public class ChatMessage {
 		this.timestamp = timestamp;
 		this.user = user;
 		this.messageId = messageId;
+		log.info("Message created here with messageId=" + messageId); 
 	}
 
 	public int getMessageId() {

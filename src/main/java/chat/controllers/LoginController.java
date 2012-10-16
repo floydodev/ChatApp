@@ -39,5 +39,8 @@ public class LoginController {
 		return "chatHome";
 	}
 
+	public void setChannelUserManager(ChannelUserManager channelUserManager) {
+		this.channelUserManager = channelUserManager;
+	}
 
 }

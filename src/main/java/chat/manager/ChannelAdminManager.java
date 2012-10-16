@@ -11,6 +11,10 @@ public class ChannelAdminManager {
 		this.channelDAO = channelDAO;
 	}
 	
+//	public Channel getChannel(String channelId) {
+//		return channelDAO.getChannel(channelId);
+//	}
+	
 	public void addChannel(String channelId) {
 		channelDAO.addChannel(new Channel(channelId));
 	}

@@ -19,11 +19,10 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 	}
 	
 	// Channel Message Management methods
-	// TODO  remove me after unit testing of refactored Channel + addMessage methods
+	// TODO remove me after refactoring of Channel + addMessage methods
 	public void addMessage(String channelId, ChatMessage message) {
 		channelMap.get(channelId).addMessage(message);
 	}
-
 
 	public void addMessage(String channelId, String message, Date date,
 			User user) {
@@ -44,6 +43,10 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 		channelMap.get(channelId).addUser(user);
 	}
 
+//	public User getUser(String channelId, String emailId) {
+//		return channelMap.get(channelId).getUser(emailId);
+//	}
+	
 	public List<User> getUsers(String channelId) {
 		return channelMap.get(channelId).getUsers();
 	}
@@ -63,7 +66,6 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 	}
 
 	public Channel getChannel(String channelId) {
-		// TODO Auto-generated method stub
-		return null;
+		return channelMap.get(channelId);
 	}
 }
