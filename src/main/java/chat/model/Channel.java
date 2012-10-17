@@ -20,23 +20,16 @@ public class Channel {
 	public static final String DEFAULT_NAME = "default";
 	
 	public Channel() {
-		super();
-		this.name = DEFAULT_NAME;
-		this.messageIdFountain = new MessageIdFountain();
+		this(DEFAULT_NAME, new MessageIdFountainAtomicIntImpl());
 	}
 
-	public Channel(MessageIdFountain idFountain, String name) {
+	public Channel(String name) {
+		this(name, new MessageIdFountainAtomicIntImpl());
+	}
+
+	public Channel(String name, MessageIdFountain idFountain) {
 		this.name = DEFAULT_NAME;
 		this.messageIdFountain = idFountain;
-	}
-
-//	public int lastMessageId() {
-//		return messageIdFountain.getLastId();
-//	}
-	
-	public Channel(String name) {
-		super();
-		this.name = name;
 	}
 	
 	public String getName() {

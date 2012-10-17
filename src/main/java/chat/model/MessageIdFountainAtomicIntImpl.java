@@ -2,7 +2,7 @@ package chat.model;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MessageIdFountain {
+public class MessageIdFountainAtomicIntImpl implements MessageIdFountain {
 
 	private AtomicInteger messageIdFountain = new AtomicInteger();
 
