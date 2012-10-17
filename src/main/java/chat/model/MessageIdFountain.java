@@ -1,17 +1,9 @@
 package chat.model;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public interface MessageIdFountain {
 
-public class MessageIdFountain {
+	public int getNextId();
 
-	private AtomicInteger messageIdFountain = new AtomicInteger();
+	public int getLastId();
 
-	public int getNextId() {
-		return messageIdFountain.incrementAndGet();
-	}
-	
-	public int getLastId() {
-		return messageIdFountain.get();
-	}
-	
 }
