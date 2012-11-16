@@ -7,7 +7,7 @@
     
 	<display-name>Spring3MVC</display-name>
     	<welcome-file-list>
-        <welcome-file>login.html</welcome-file>
+        <welcome-file>html/login.html</welcome-file>
     </welcome-file-list>
     
 <!-- 	<display-name>Spring3MVC</display-name>
@@ -15,18 +15,62 @@
         <welcome-file>/</welcome-file>
     </welcome-file-list> -->
 
+	<!--
     <servlet>
         <servlet-name>spring3</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+      	<load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>spring3</servlet-name>
         <url-pattern>*.do</url-pattern>
-        <!-- <url-pattern>*.jsp</url-pattern> -->
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
+    -->
+    
+    <servlet>
+        <servlet-name>ChatMessageServlet</servlet-name>
+        <servlet-class>chat.servlet.ChatMessageServlet</servlet-class>
+      <!--   <load-on-startup>1</load-on-startup> -->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChatMessageServlet</servlet-name>
+        <url-pattern>/chatMessageServlet</url-pattern>
     </servlet-mapping>
     
-    <listener>
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>chat.servlet.LoginServlet</servlet-class>
+       <!--  <load-on-startup>1</load-on-startup> -->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/loginServlet</url-pattern>
+    </servlet-mapping>
+    
+	<context-param>
+	   <param-name>contextConfigLocation</param-name>
+	   <param-value>/WEB-INF/classes/applicationContext.xml</param-value>
+	</context-param>
+	<context-param>  
+	  <param-name>contextClass</param-name>  
+	  <param-value>org.springframework.web.context.support.XmlWebApplicationContext</param-value>  
+	</context-param>
+	
+<!-- 	<context-param>  
+	  <param-name>contextClass</param-name>  
+	  <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>  
+	</context-param>
+	<context-param>  
+	  <param-name>contextConfigLocation</param-name>  
+	  <param-value>chat.config.SpringJavaConfig</param-value>  
+	</context-param> -->
+	
+	<listener>
     	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+ 
+	<listener>
+		<listener-class>chat.servlet.MySessionAttributeListener</listener-class>
 	</listener>
 </web-app>

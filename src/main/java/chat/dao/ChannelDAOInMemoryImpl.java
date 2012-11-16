@@ -2,8 +2,8 @@ package chat.dao;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import chat.model.Channel;
 import chat.model.ChatMessage;
@@ -12,6 +12,7 @@ import chat.model.User;
 
 public class ChannelDAOInMemoryImpl implements ChannelDAO {
 	
+	private static ChannelDAO _instance;
 	private Map<String, Channel> channelMap = new HashMap<String, Channel>();
 	
 	public ChannelDAOInMemoryImpl(Channel channel) {
@@ -43,7 +44,7 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 //		return channelMap.get(channelId).getUser(emailId);
 //	}
 	
-	public List<User> getUsers(String channelId) {
+	public Set<User> getUsers(String channelId) {
 		return channelMap.get(channelId).getUsers();
 	}
 	
@@ -63,5 +64,9 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 
 	public Channel getChannel(String channelId) {
 		return channelMap.get(channelId);
+	}
+
+	public User getUser(String channelId, String userEmailAddress) {
+		return channelMap.get(channelId).getUser(userEmailAddress);
 	}
 }

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import chat.manager.ChannelUserManager;
 import chat.model.User;
+import chat.service.ChannelUserManager;
 
 @Controller
 @SessionAttributes({"user"})

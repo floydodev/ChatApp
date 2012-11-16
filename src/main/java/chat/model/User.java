@@ -1,14 +1,20 @@
 package chat.model;
 
+import javax.servlet.http.HttpServletResponse;
+
+
 public class User {
 	
 	private String displayName;
 	private String emailAddress;
-	
-	public User(String displayName, String emailAddress) {
+	//private HttpServletResponse connection;
+	private int lastMessageId;
+
+	public User(String displayName, String emailAddress) { //, HttpServletResponse connection) {
 		super();
 		this.displayName = displayName;
 		this.emailAddress = emailAddress;
+		// this.connection = connection;
 	}
 
 	public User() {
@@ -29,6 +35,22 @@ public class User {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+	
+	public int getLastMessageId() {
+		return lastMessageId;
+	}
+
+	public void setLastMessageId(int lastMessageId) {
+		this.lastMessageId = lastMessageId;
+	}
+
+//	public HttpServletResponse getConnection() {
+//		return connection;
+//	}
+//
+//	public void setConnection(HttpServletResponse connection) {
+//		this.connection = connection;
+//	}
 
 	@Override
 	public int hashCode() {

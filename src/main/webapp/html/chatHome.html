@@ -2,11 +2,11 @@
 <head>
 <title>Chat P.O.C - Using JS for traditional AJAX polling to a Chat Servlet</title>
 <link rel="stylesheet" type="text/css" href="css/chatpage.css" title="Style">
-<body>
+<body onload = "send('connect');">
 <h2 class="page-title">Chat-a-holics - Live Chat Forums</h2>
-<form id="form-chat" name="myForm" method="POST">
+<form id="form-chat" name="myForm" method="POST" onsubmit='return handleSubmit()'>
 <div id="div_chat" 
-	style="height: 400px; width: 500px; 
+	style="height: 300px; width: 500px; 
 	overflow: auto; 
 	background-color: #CCCCCC; border: 1px solid #555555;">
 </div>
@@ -15,14 +15,15 @@
  <tr>
   <td>Enter message:</td>
   <td><input type="text" name="txtname" id="messageBox" /></td>
-   <td><input type="button" id="btn-send" value="Send"/></td>
+   <td><input type="button" id="btn-send" value="Send it!" onclick="send('send');"/></td>
+   <!-- <td><input type="button" id="btn-poll" value="Poll" onclick="send('connect');"/></td> -->
  </tr>
 </table>
 </div>
 
 </form>
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="js/chat.ajax.jquery.js"></script>
+<script type="text/javascript" src="js/chat.ajax.js"></script>
 </body>
 </head>
 </html>

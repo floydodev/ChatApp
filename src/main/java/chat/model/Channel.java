@@ -1,18 +1,20 @@
 package chat.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import chat.util.MessageIdFountain;
+import chat.util.MessageIdFountainAtomicIntImpl;
 
 
 public class Channel {
 	
 	private NavigableMap<Integer, ChatMessage> messageMap = new TreeMap<Integer, ChatMessage>();
-	private List<User> users = new ArrayList<User>();
+	private Set<User> users = new HashSet<User>();
 	private String name;
 	
 	MessageIdFountain messageIdFountain = null;
@@ -56,7 +58,7 @@ public class Channel {
 		return users.remove(user);
 	}
 	
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
@@ -70,7 +72,11 @@ public class Channel {
 	}
 
 	public User getUser(String emailId) {
-		// TODO Auto-generated method stub
+		for (User tmpUser : users) {
+			if (tmpUser.getEmailAddress().equals(emailId)) {
+				return tmpUser;
+			}		
+		}
 		return null;
 	}
 

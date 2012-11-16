@@ -11,24 +11,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chat.dao.ChannelDAOInMemoryImpl;
-import chat.manager.ChannelMessageManager;
 import chat.model.Channel;
 import chat.model.ChatMessage;
 import chat.model.User;
+import chat.service.ChannelMessageManager;
 
 public class ChatControllerTest {
 	
 	private final static Log log = LogFactory.getLog(ChatControllerTest.class);
 
 	ChannelMessageManager channelMsgMgr;
-	ChatController chatController;
+	ChatMessageController chatController;
 	User user;
 	
 	@Before
 	public void setUp() throws Exception {
 		user = new User("Test Display Name", "test@test.com");
 		channelMsgMgr = new ChannelMessageManager(new ChannelDAOInMemoryImpl(new Channel()));
-		chatController = new ChatController();
+		chatController = new ChatMessageController();
 		chatController.setChannelManager(channelMsgMgr);
 	}
 

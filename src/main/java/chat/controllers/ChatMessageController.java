@@ -1,11 +1,19 @@
 package chat.controllers;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mortbay.util.ajax.Continuation;
+import org.mortbay.util.ajax.ContinuationSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,9 +29,9 @@ import chat.service.ChannelMessageManager;
  
 @Controller
 @SessionAttributes({"user"})
-public class ChatController {
+public class ChatMessageController {
 
-	static private final Log log = LogFactory.getLog(ChatController.class);
+	static private final Log log = LogFactory.getLog(ChatMessageController.class);
 	
 	@Autowired
 	private ChannelMessageManager channelMessageManager;
@@ -50,7 +58,6 @@ public class ChatController {
 		return messageMap;
 	}
 	
-
 	private Map<Integer, ChatMessage>  processRegularPoll(User user, int lastMessageId) {
 		Map<Integer, ChatMessage> messageMap = new HashMap<Integer, ChatMessage>();
 		// TODO what about zero-range check?
@@ -77,5 +84,60 @@ public class ChatController {
 		this.channelMessageManager = channelMessageManager;
 	}
 
+
+	private class MessageSender implements Runnable {
+		
+	    protected boolean running = true;
+	    protected final Map<Integer, ChatMessage> messages = new HashMap<Integer, ChatMessage>();
+	    private ServletResponse connection;
+	    
+	    public void send(Map<Integer, ChatMessage> chatMessages) {
+	        synchronized (messages) {
+	            messages.putAll(chatMessages);
+	            log.info("Message added #messages=" + messages.size());
+	            messages.notify();
+	        }
+	    }
+		
+		public MessageSender(ServletResponse connection) {
+			this.connection = connection;
+		}
+		
+		public void run() {
+			while (running) {
+				// send the messages as soon as message.size() > 0
+				while (messages.isEmpty()) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				Map<Integer, ChatMessage> pendingMessages = null;
+				synchronized (messages) {
+					pendingMessages.putAll(messages);
+					messages.clear();
+				}
+				if (connection == null) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				try {
+					OutputStream out = connection.getOutputStream();
+					// convert messages to JSON and then post to output stream
+					// How will this work? Surely it'll be intercepted by Jackson....?
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 }

@@ -7,10 +7,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import chat.dao.ChannelDAO;
 import chat.dao.ChannelDAOInMemoryImpl;
-import chat.manager.ChannelUserManager;
 import chat.model.Channel;
 import chat.model.User;
+import chat.service.ChannelUserManager;
 
 public class LoginControllerTest {
 
@@ -24,7 +25,9 @@ public class LoginControllerTest {
 
 	@Test
 	public void login_AddsUser_ReturnsView() {
-		ChannelUserManager channelUserMgr = new ChannelUserManager(new ChannelDAOInMemoryImpl(new Channel()));
+		Channel channel = new Channel();
+		ChannelDAO channelDAO = new ChannelDAOInMemoryImpl(channel);
+		ChannelUserManager channelUserMgr = new ChannelUserManager(channelDAO);
 		LoginController loginController = new LoginController();
 		loginController.setChannelUserManager(channelUserMgr);
 		String userDisplayName = "Mr Test";

@@ -13,6 +13,7 @@ import chat.dao.ChannelDAOInMemoryImpl;
 import chat.model.Channel;
 import chat.model.ChatMessage;
 import chat.model.User;
+import chat.service.ChannelMessageManager;
 
 public class ChannelMessageManagerTest {
 	

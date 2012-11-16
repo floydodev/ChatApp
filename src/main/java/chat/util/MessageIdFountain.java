@@ -1,4 +1,4 @@
-package chat.model;
+package chat.util;
 
 // dummy comments
 

@@ -1,4 +1,4 @@
-package chat.manager;
+package chat.service;
 
 import chat.dao.ChannelDAO;
 import chat.model.Channel;

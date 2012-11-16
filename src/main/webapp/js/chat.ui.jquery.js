@@ -19,7 +19,7 @@ $(document).ready(function() {
         
         var displayNameVal = $("#user_display_name").val();
         if(displayNameVal == '') {
-            $("#user_display_name").after('<span class="error">Please enter a Display Name</span>');
+            $("#user_display_name").after('<span class="error">Please enter a Display Name!</span>');
             hasError = true;
         }
  

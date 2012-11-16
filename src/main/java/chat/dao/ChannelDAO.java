@@ -3,6 +3,7 @@ package chat.dao;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import chat.model.Channel;
 import chat.model.ChatMessage;
@@ -23,12 +24,14 @@ public interface ChannelDAO {
 	
 	//public User getUser(String channelId, String emailId);
 	
-	public List<User> getUsers(String channelId);
+	public Set<User> getUsers(String channelId);
 
 	public void addChannel(Channel channel);
 
 	public boolean removeChannel(String channelId);
 
 	public Channel getChannel(String channelId);
+
+	public User getUser(String channelId, String userEmailAddress);
 
 }

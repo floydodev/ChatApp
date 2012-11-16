@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import chat.manager.ChannelAdminManager;
+import chat.service.ChannelAdminManager;
 
 public class ChannelAdminController {
 

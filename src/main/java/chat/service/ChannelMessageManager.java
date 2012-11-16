@@ -1,4 +1,4 @@
-package chat.manager;
+package chat.service;
 
 import java.util.Date;
 import java.util.HashMap;
