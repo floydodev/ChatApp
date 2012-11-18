@@ -2,6 +2,7 @@ package chat.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -15,23 +16,32 @@ import chat.model.User;
 
 import com.google.gson.Gson;
 
-public class SnapshotMessengerService implements MessengerService {
+public class SnapshotMessengerServiceRefactored implements MessengerService {
 
 	private static final Log log = LogFactory.getLog(SnapshotMessengerService.class);
 	
-	private NavigableMap<Integer, ChatMessage> messageRepoMap = new TreeMap<Integer, ChatMessage>();
+	//private NavigableMap<Integer, ChatMessage> messageRepoMap = new TreeMap<Integer, ChatMessage>();
 	private Map<Integer, ChatMessage> messagePayloadMap = new HashMap<Integer, ChatMessage>();
 	
-	private UserConnectionManager userConnectionManager = null;
+	private UserConnectionManager userConnectionManager;
+	private ChannelMessageManager channelMessageManager;
 	private boolean snapshotRequested = false;
-	private int snapshotSize;
+	private int snapshotSize = 10;
 	private boolean running = true;
 
-	public SnapshotMessengerService(UserConnectionManager userConnectionManager) {
+	public SnapshotMessengerServiceRefactored(UserConnectionManager userConnectionManager, 
+												ChannelMessageManager channelMessageManager) {
 		this.userConnectionManager = userConnectionManager;
-		this.snapshotSize = 10;
+		this.channelMessageManager = channelMessageManager;
 	}
-	
+
+	public SnapshotMessengerServiceRefactored(UserConnectionManager userConnectionManager, 
+												ChannelMessageManager channelMessageManager, 
+												int snapshotSize) {
+		this(userConnectionManager, channelMessageManager);
+		this.snapshotSize = snapshotSize;
+	}
+
 	public void stop() {
 		running = false;
 	}
@@ -72,9 +82,12 @@ public class SnapshotMessengerService implements MessengerService {
 		synchronized (messagePayloadMap) {
 			snapshotRequested = false;
 			// Copy received messages into repo
-			messageRepoMap.putAll(messagePayloadMap);
+			for (Map.Entry<Integer, ChatMessage> entry : messagePayloadMap.entrySet()) {
+				channelMessageManager.addMessage(entry.getValue().getText(), 
+						Calendar.getInstance().getTime(), entry.getValue().getUser());
+			}
 			messagePayloadMap.clear();
-			if (messageRepoMap.isEmpty()) {
+			if (channelMessageManager.getMessages().isEmpty()) {
 				// Nothing to publish
 				return;
 			}
@@ -85,29 +98,20 @@ public class SnapshotMessengerService implements MessengerService {
 			synchronized(userConnectionManager) {
 				for (User user : userConnectionManager.getUserConnectionMap().keySet()) {
 					try {
-						int latestMessageId = messageRepoMap.lastKey();
-						Map<Integer, ChatMessage> pendingMessages = new TreeMap<Integer, ChatMessage>();
-						
+						NavigableMap<Integer, ChatMessage> pendingMessages = new TreeMap<Integer, ChatMessage>();
 						if (user.getLastMessageId() == -1) {
-							// terse version
-								//pendingMessages.putAll(messageRepoMap.tailMap(latestMessageId < 10 ? 0 : latestMessageId - 10));
-							// verbose version
-							if (latestMessageId < snapshotSize) {
-								pendingMessages.putAll(messageRepoMap.tailMap(0));
-								// send all messages from the repo (it's 
-							} else {
-								pendingMessages.putAll(messageRepoMap.tailMap((latestMessageId - snapshotSize) + 1));
-								// send a many messages as 'snotshotSize' specifiies
-							}
+							// send up to 'snapshotSize' num of messages back to the client
+							pendingMessages.putAll(channelMessageManager.getLastXMessages(snapshotSize));
 						} else {
 							// send only the messages not yet sent during this connection session
-							pendingMessages.putAll(messageRepoMap.tailMap(user.getLastMessageId() + 1));
+							//pendingMessages.putAll(messageRepoMap.tailMap(user.getLastMessageId() + 1));
+							pendingMessages.putAll(channelMessageManager.getMessagesSince(user.getLastMessageId()));
 						}
 						if (!pendingMessages.isEmpty()) {
 							// TODO Why did I need to add this? Wouldn't the polling cycle ensure
 							// the client always passed up the lastMessageId received? Why explicitly set it?
 							// What scenarios would cause a double send?
-							user.setLastMessageId(latestMessageId);
+							user.setLastMessageId(pendingMessages.lastKey());
 							PrintWriter writer = userConnectionManager.getConnection(user).getWriter();
 							Gson gson = new Gson();
 							String jsonString = gson.toJson(pendingMessages); 

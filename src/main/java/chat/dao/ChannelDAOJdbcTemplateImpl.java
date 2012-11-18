@@ -70,4 +70,9 @@ public class ChannelDAOJdbcTemplateImpl implements ChannelDAO {
 		return null;
 	}
 
+	public int getLastMessageId(String channelId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

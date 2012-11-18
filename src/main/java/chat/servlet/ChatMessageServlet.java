@@ -18,28 +18,32 @@ import org.apache.catalina.comet.CometEvent;
 import org.apache.catalina.comet.CometProcessor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import chat.model.ChatMessage;
 import chat.model.User;
 import chat.service.ChannelUserManager;
-import chat.service.SnapshotMessengerService;
+import chat.service.MessengerService;
+import chat.service.UserConnectionManager;
+import chat.util.ChatClientAction;
 
 public class ChatMessageServlet extends HttpServlet implements CometProcessor {
-															//, HttpRequestHandler {
+
 	static private final Log log = LogFactory.getLog(ChatMessageServlet.class);
 	
 	private List<HttpServletResponse> userConnections = new ArrayList<HttpServletResponse>();
-	private SnapshotMessengerService messageSender = null;
 	private ChannelUserManager channelUserManager = null;
-	Thread messageSenderThread = null;
+	private UserConnectionManager userConnectionManager = null;
+	private MessengerService messageSender = null;
+	private Thread messageSenderThread = null;
 	
 	public void init() throws ServletException {
 		channelUserManager = WebApplicationContextUtils.getRequiredWebApplicationContext(
 									getServletContext()).getBean("channelUserManager", ChannelUserManager.class);
+		userConnectionManager = WebApplicationContextUtils.getRequiredWebApplicationContext(
+				getServletContext()).getBean("userConnectionManager", UserConnectionManager.class);
 		messageSender = WebApplicationContextUtils.getRequiredWebApplicationContext(
-				getServletContext()).getBean("messengerService", SnapshotMessengerService.class);
+				getServletContext()).getBean("messengerService", MessengerService.class);
 
 		messageSenderThread = 
 			new Thread(messageSender, "MessageSender[" + getServletContext().getContextPath() + "]");
@@ -93,14 +97,14 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 			
 			log.info("Begin for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
 			event.setTimeout(900*1000*1000); /* timeout is 15 minutes */
-			synchronized(channelUserManager) {
-				channelUserManager.addUserConnection(channelUserManager.getUser(userEmailAddress), response);
+			synchronized(userConnectionManager) {
+				userConnectionManager.addUserConnection(channelUserManager.getUser(userEmailAddress), response);
 				//channelUserManager.getUser(userEmailAddress).setConnection(response);
 			}
 		} else if (event.getEventType() == CometEvent.EventType.ERROR) {
 			log.info("Error for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
-			synchronized(channelUserManager) {
-				channelUserManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
+			synchronized(userConnectionManager) {
+				userConnectionManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
 				//channelUserManager.getUser(userEmailAddress).setConnection(null);
 				// set to null. Only necessary if we are looping through each user checking the connections..
 				// before deciding whether to send message or not
@@ -109,8 +113,8 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 		} else if (event.getEventType() == CometEvent.EventType.END) {
 			// Completes a long-polling cycle. The client is designed to start another cycle
 			log.info("End for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
-			synchronized(channelUserManager) {
-				channelUserManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
+			synchronized(userConnectionManager) {
+				userConnectionManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
 				//channelUserManager.getUser(userEmailAddress).setConnection(null);
 			}
 			event.close();
@@ -129,9 +133,10 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 				log.info("chatMessageStr=" + chatMessageStr);
 				String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 				User user = channelUserManager.getUser(userEmailAddress);
+				//channelMessageManager.addMessage(chatMessageStr, Calendar.getInstance().getTime(), user);
 				ChatMessage chatMessage = 
-						new ChatMessage(chatMessageStr, Calendar.getInstance().getTime(), user, messageId++);
-				messageSender.receive(chatMessage);
+						new ChatMessage(chatMessageStr, Calendar.getInstance().getTime(), user, ++messageId);
+				messageSender.consume(chatMessage);
 			} else {
 				log.info("chatMessageStr=<blank>");
 			}
@@ -151,12 +156,6 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 		}
 	}
 	
-	private static int messageId = 1;
-//
-//	public void handleRequest(HttpServletRequest request,
-//			HttpServletResponse response) throws ServletException, IOException {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	private static int messageId = 0;
 
 }

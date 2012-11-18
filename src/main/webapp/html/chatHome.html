@@ -3,7 +3,7 @@
 <title>Chat P.O.C - Using JS for traditional AJAX polling to a Chat Servlet</title>
 <link rel="stylesheet" type="text/css" href="css/chatpage.css" title="Style">
 <body onload = "send('connect');">
-<h2 class="page-title">Chat-a-holics - Live Chat Forums</h2>
+<h2 class="page-title">!Chat-a-holics - Live Chat Forums!</h2>
 <form id="form-chat" name="myForm" method="POST" onsubmit='return handleSubmit()'>
 <div id="div_chat" 
 	style="height: 300px; width: 500px; 
@@ -14,7 +14,7 @@
 <table>
  <tr>
   <td>Enter message:</td>
-  <td><input type="text" name="txtname" id="messageBox" /></td>
+  <td><input type="text" name="txtname" id="messageBox" autocomplete="off" /></td>
    <td><input type="button" id="btn-send" value="Send it!" onclick="send('send');"/></td>
    <!-- <td><input type="button" id="btn-poll" value="Poll" onclick="send('connect');"/></td> -->
  </tr>

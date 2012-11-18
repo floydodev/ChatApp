@@ -21,14 +21,14 @@ public class ChatControllerTest {
 	private final static Log log = LogFactory.getLog(ChatControllerTest.class);
 
 	ChannelMessageManager channelMsgMgr;
-	ChatMessageController chatController;
+	ChatController chatController;
 	User user;
 	
 	@Before
 	public void setUp() throws Exception {
 		user = new User("Test Display Name", "test@test.com");
 		channelMsgMgr = new ChannelMessageManager(new ChannelDAOInMemoryImpl(new Channel()));
-		chatController = new ChatMessageController();
+		chatController = new ChatController();
 		chatController.setChannelManager(channelMsgMgr);
 	}
 

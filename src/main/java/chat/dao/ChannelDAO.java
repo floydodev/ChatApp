@@ -34,4 +34,6 @@ public interface ChannelDAO {
 
 	public User getUser(String channelId, String userEmailAddress);
 
+	public int getLastMessageId(String channelId);
+
 }

@@ -54,6 +54,7 @@ function receive(request) {
 		console.log(key + ': ' + chatMessage);
 		console.log(key + ': chatMessage.text=' + chatMessage.text);
 		showMessage(chatMessage);
+		$('#div_chat').scrollTop($('#div_chat')[0].scrollHeight);
 	});
 	send('connect');	/* current request is dead, must create a new one */
 }

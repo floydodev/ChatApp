@@ -15,19 +15,35 @@
 	 	<constructor-arg ref="channelDAO"/>
 	 </bean> -->
 	 
-	 
 	<bean id="defaultChannel" class="chat.model.Channel"/>
 
 	<bean id="channelDAO" class="chat.dao.ChannelDAOInMemoryImpl">
 		<constructor-arg ref="defaultChannel"/>
 	</bean>
 		 
-	 <bean id="channelUserManager" class="chat.service.ChannelUserManager" >
-	 	<constructor-arg ref="channelDAO"/>
-	 </bean>
+	<bean id="channelUserManager" class="chat.service.ChannelUserManager" >
+		<constructor-arg ref="channelDAO"/>
+	</bean>
+	
+	<bean id="channelMessageManager" class="chat.service.ChannelMessageManager">
+		<constructor-arg ref="channelDAO"/>
+	</bean>
 
-	<bean id="messengerService" class="chat.service.SnapshotMessengerService">
+	<bean id="userConnectionManager" class="chat.service.UserConnectionManager" />
+	 
+	<bean id="messengerService" class="chat.service.SnapshotMessengerServiceRefactored">
+		<constructor-arg ref="userConnectionManager"/>
+		<constructor-arg ref="channelMessageManager"/>
+	</bean>
+	
+	<bean id="clientActionRequestHandler" class="chat.servlet.service.ClientActionRequestHandlerImpl">
 		<constructor-arg ref="channelUserManager"/>
+		<constructor-arg ref="messengerService" />
+	</bean>
+	
+	<bean id="connectionLifecycleHandler" class="chat.servlet.service.ConnectionLifecycleHandlerImpl">
+		<constructor-arg ref="channelUserManager"/>
+		<constructor-arg ref="userConnectionManager"/>
 	</bean>
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">

@@ -37,6 +37,14 @@ public class ChannelMessageManager {
 		return getMessages(Channel.DEFAULT_NAME);
 	}
 	
+	public int getLastMessageId() {
+		return getLastMessageId(Channel.DEFAULT_NAME);
+	}
+	
+	private int getLastMessageId(String channelId) {
+		return channelDAO.getLastMessageId(channelId);
+	}
+
 	public Map<Integer, ChatMessage> getMessages(String channelId) {
 		return channelDAO.getMessages(channelId);
 	}

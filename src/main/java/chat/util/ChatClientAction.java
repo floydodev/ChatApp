@@ -1,4 +1,4 @@
-package chat.servlet;
+package chat.util;
 
 public class ChatClientAction {
 

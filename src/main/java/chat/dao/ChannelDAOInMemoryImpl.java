@@ -12,7 +12,6 @@ import chat.model.User;
 
 public class ChannelDAOInMemoryImpl implements ChannelDAO {
 	
-	private static ChannelDAO _instance;
 	private Map<String, Channel> channelMap = new HashMap<String, Channel>();
 	
 	public ChannelDAOInMemoryImpl(Channel channel) {
@@ -68,5 +67,9 @@ public class ChannelDAOInMemoryImpl implements ChannelDAO {
 
 	public User getUser(String channelId, String userEmailAddress) {
 		return channelMap.get(channelId).getUser(userEmailAddress);
+	}
+
+	public int getLastMessageId(String channelId) {
+		return channelMap.get(channelId).getLastMessageId();
 	}
 }

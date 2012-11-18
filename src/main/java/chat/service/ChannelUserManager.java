@@ -13,32 +13,18 @@ import chat.model.User;
 public class ChannelUserManager {
 	
 	private ChannelDAO channelDAO;
-	private Map<User, HttpServletResponse> userConnectionMap;
 	
 	public ChannelUserManager(ChannelDAO channelDAO) {
 		this.channelDAO = channelDAO;
-		this.userConnectionMap = new HashMap<User, HttpServletResponse>();
 	}
 	
-	public Map<User, HttpServletResponse> getUserConnectionMap() {
-		return userConnectionMap;
-	}
 	public void addUser(User user) {
 		addUser(Channel.DEFAULT_NAME, user);
-	}
-	
-	public HttpServletResponse addUserConnection(User user, HttpServletResponse connection) {
-		return userConnectionMap.put(user, connection);
-	}
-
-	public HttpServletResponse removeUserConnection(User user) {
-		return userConnectionMap.remove(user);
 	}
 	
 	public void addUser(String channelId, User user) {
 		channelDAO.addUser(channelId, user);
 	}
-
 	
 	public User getUser(String userEmailAddress) {
 		return getUser(Channel.DEFAULT_NAME, userEmailAddress);

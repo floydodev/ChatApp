@@ -14,24 +14,39 @@ import chat.model.User;
 import com.google.gson.Gson;
 
 
-public class BasicMessengerService extends MessengerService {
+public class BasicMessengerService implements MessengerService {
 
 	static final Log log = LogFactory.getLog(BasicMessengerService.class);
 	private Map<Integer, ChatMessage> messages = new HashMap<Integer, ChatMessage>();
-	private ChannelUserManager channelUserManager = null;
+	private UserConnectionManager userConnectionManager = null;
+	private boolean running = true;
 
-	public BasicMessengerService(ChannelUserManager channelUserManager) {
-		this.channelUserManager  = channelUserManager;
+	public BasicMessengerService(UserConnectionManager userConnectionManager) {
+		this.userConnectionManager = userConnectionManager;
 	}
 
+	public void stop() {
+		running  = false;
+	}
+
+	public void run() {
+		while (running) {
+			publish();
+		}
+	}
+	
 	/**
 	 * Add message for sending.
 	 */
-	public void receive(ChatMessage message) {
+	public void consume(ChatMessage message) {
 		synchronized (messages) {
 			messages.put(message.getMessageId(), message);
 			messages.notify();
 		}
+	}
+	
+	public void snapshot() {
+		// do nothing.
 	}
 	
 	public void publish() {
@@ -45,7 +60,7 @@ public class BasicMessengerService extends MessengerService {
 			}
 		}
 	
-		synchronized (channelUserManager) {
+		synchronized (userConnectionManager) {
 			//String[] pendingMessages = null;
 			// ChatMessage[] pendingMessages = null;
 			Map<Integer, ChatMessage> pendingMessages = new HashMap<Integer, ChatMessage>();
@@ -54,9 +69,9 @@ public class BasicMessengerService extends MessengerService {
 				messages.clear();
 			}
 			// Send any pending messages to any logged in users
-			for (User user : channelUserManager.getUserConnectionMap().keySet()) {
+			for (User user : userConnectionManager.getUserConnectionMap().keySet()) {
 				try {
-					PrintWriter writer = channelUserManager.getUserConnectionMap().get(user).getWriter();
+					PrintWriter writer = userConnectionManager.getUserConnectionMap().get(user).getWriter();
 					Gson gson = new Gson();
 					String jsonString = gson.toJson(pendingMessages); 
 					log.info("Sending json message: " + jsonString + " to user:" + user.getEmailAddress());

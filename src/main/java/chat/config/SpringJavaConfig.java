@@ -1,7 +1,5 @@
 package chat.config;
 
-import javax.sql.DataSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +10,7 @@ import chat.model.Channel;
 import chat.service.ChannelMessageManager;
 import chat.service.ChannelUserManager;
 import chat.service.SnapshotMessengerService;
+import chat.service.UserConnectionManager;
 
 @Configuration
 public abstract class SpringJavaConfig {
@@ -43,9 +42,13 @@ public abstract class SpringJavaConfig {
 	
 	@Bean
 	public SnapshotMessengerService messengerService() {
-		return new SnapshotMessengerService(channelUserManager());
+		return new SnapshotMessengerService(userConnectionManager());
 	}
 	
+	@Bean
+	public UserConnectionManager userConnectionManager() {
+		return new UserConnectionManager();
+	}
 //	@ExternalBean
 //	public abstract DataSource dataSource();
 }
