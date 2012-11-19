@@ -31,15 +31,14 @@ public class ConnectionLifecycleHandlerImpl implements ConnectionLifecycleHandle
 		
 		if (event.getEventType() == CometEvent.EventType.BEGIN) {
 			// Starts the long-polling cycle
-			
-			log.info("Begin for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
+			log.info("user=" + userEmailAddress + " - Begin for session: " + request.getSession(true).getId());
 			event.setTimeout(900*1000*1000); /* timeout is 15 minutes */
 			synchronized(userConnectionManager) {
 				userConnectionManager.addUserConnection(channelUserManager.getUser(userEmailAddress), response);
 				//channelUserManager.getUser(userEmailAddress).setConnection(response);
 			}
 		} else if (event.getEventType() == CometEvent.EventType.ERROR) {
-			log.info("Error for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
+			log.info("user=" + userEmailAddress + " - Error for session: " + request.getSession(true).getId());
 			synchronized(userConnectionManager) {
 				userConnectionManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
 				//channelUserManager.getUser(userEmailAddress).setConnection(null);
@@ -49,7 +48,7 @@ public class ConnectionLifecycleHandlerImpl implements ConnectionLifecycleHandle
 			event.close();
 		} else if (event.getEventType() == CometEvent.EventType.END) {
 			// Completes a long-polling cycle. The client is designed to start another cycle
-			log.info("End for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
+			log.info("user=" + userEmailAddress + " - End for session: " + request.getSession(true).getId());
 			synchronized(userConnectionManager) {
 				userConnectionManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
 				//channelUserManager.getUser(userEmailAddress).setConnection(null);

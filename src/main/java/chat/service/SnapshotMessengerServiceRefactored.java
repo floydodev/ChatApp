@@ -52,41 +52,43 @@ public class SnapshotMessengerServiceRefactored implements MessengerService {
 		}
 	}
 	
-	public void consume(ChatMessage message) {
-		synchronized(messagePayloadMap) {
-			messagePayloadMap.put(message.getMessageId(), message);
-			messagePayloadMap.notify();
+	public void consume(String message, User user) {
+		synchronized(channelMessageManager) {
+			channelMessageManager.addMessage(message, Calendar.getInstance().getTime(), user);
+			//messagePayloadMap.put(message.getMessageId(), message);
+			//messagePayloadMap.notify();
+			channelMessageManager.notify();
 		}
 
 	}
 	
 	public void snapshot() {
-		synchronized(messagePayloadMap) {
+		synchronized(channelMessageManager) {
 			snapshotRequested = true;
-			messagePayloadMap.notify();
+			channelMessageManager.notify();
 		}
 
 	}
 
 	public void publish() {
-		while (messagePayloadMap.isEmpty() && !snapshotRequested) {
+		while (!channelMessageManager.hasNewMessages() && !snapshotRequested) {
 			try {
-				synchronized (messagePayloadMap) {
-					messagePayloadMap.wait();	
+				synchronized (channelMessageManager) {
+					channelMessageManager.wait();	
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				log.error(e);
 			}
 		}
-		synchronized (messagePayloadMap) {
-			snapshotRequested = false;
+		synchronized (channelMessageManager) {
+			
 			// Copy received messages into repo
-			for (Map.Entry<Integer, ChatMessage> entry : messagePayloadMap.entrySet()) {
-				channelMessageManager.addMessage(entry.getValue().getText(), 
-						Calendar.getInstance().getTime(), entry.getValue().getUser());
-			}
-			messagePayloadMap.clear();
+//			for (Map.Entry<Integer, ChatMessage> entry : messagePayloadMap.entrySet()) {
+//				channelMessageManager.addMessage(entry.getValue().getText(), 
+//						Calendar.getInstance().getTime(), entry.getValue().getUser());
+//			}
+			//messagePayloadMap.clear();
 			if (channelMessageManager.getMessages().isEmpty()) {
 				// Nothing to publish
 				return;
@@ -114,11 +116,13 @@ public class SnapshotMessengerServiceRefactored implements MessengerService {
 							user.setLastMessageId(pendingMessages.lastKey());
 							PrintWriter writer = userConnectionManager.getConnection(user).getWriter();
 							Gson gson = new Gson();
-							String jsonString = gson.toJson(pendingMessages); 
-							log.info("Sending json message: " + jsonString + " to user:" + user.getEmailAddress());
+							String jsonString = gson.toJson(pendingMessages);
 							writer.println(jsonString);
 							writer.flush();
 							writer.close();	/* the response will not be sent until the writer is closed */
+							for (Map.Entry <Integer, ChatMessage> entry : pendingMessages.entrySet()) {
+								log.info("user=" + user.getEmailAddress() + " - Sent: " + entry.getValue());
+							}
 						}
 					} catch (IOException e) {
 						log.error("IOExeption sending message", e);
@@ -126,9 +130,15 @@ public class SnapshotMessengerServiceRefactored implements MessengerService {
 				}
 			}
 			// update lastMessageId of each user as we send out the messages
-			
+			channelMessageManager.newMessagesProcessed();
+			snapshotRequested = false;
 		}
 
+	}
+
+	public void consume(ChatMessage message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

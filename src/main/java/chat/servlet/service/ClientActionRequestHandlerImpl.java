@@ -28,28 +28,26 @@ public class ClientActionRequestHandlerImpl implements
 	}
 	
 	public void handle(HttpServletRequest request, String action) {
+		String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 
 		if (ChatClientAction.SEND.equals(action)) {
-			log.info("Handle chat request");
+			log.info("user=" + userEmailAddress + " - Chat request for session: " + request.getSession(true).getId());
 			String chatMessageStr = request.getParameter("chatMessage");
 			if (chatMessageStr != null && !"".equals(chatMessageStr)) {
-				log.info("chatMessageStr=" + chatMessageStr);
-				String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 				User user = channelUserManager.getUser(userEmailAddress);
 				//channelMessageManager.addMessage(chatMessageStr, Calendar.getInstance().getTime(), user);
-				ChatMessage chatMessage = 
-						new ChatMessage(chatMessageStr, Calendar.getInstance().getTime(), user, ++messageId);
-				messengerService.consume(chatMessage);
+				// ChatMessage chatMessage = 
+					//	new ChatMessage(chatMessageStr, Calendar.getInstance().getTime(), user, ++messageId);
+				messengerService.consume(chatMessageStr, user);
 			} else {
 				log.info("chatMessageStr=<blank>");
 			}
 		}
 		else if (ChatClientAction.POLL.equals(action)) {
-			log.info("Handle polling request");
+			log.info("user=" + userEmailAddress + " - Poll request for session: " + request.getSession(true).getId());
 			String lastMessageIdStr = request.getParameter("lastMessageId");
 			if (lastMessageIdStr != null && !"".equals(lastMessageIdStr)) {
 				int lastMessageId = Integer.parseInt(lastMessageIdStr);
-				String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 				User user = channelUserManager.getUser(userEmailAddress);
 				user.setLastMessageId(lastMessageId);
 				if (lastMessageId == -1) {

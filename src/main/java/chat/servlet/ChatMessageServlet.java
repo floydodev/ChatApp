@@ -95,14 +95,14 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 		if (event.getEventType() == CometEvent.EventType.BEGIN) {
 			// Starts the long-polling cycle
 			
-			log.info("Begin for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
+			log.info("user=" + userEmailAddress + " - Begin for session: " + request.getSession(true).getId());
 			event.setTimeout(900*1000*1000); /* timeout is 15 minutes */
 			synchronized(userConnectionManager) {
 				userConnectionManager.addUserConnection(channelUserManager.getUser(userEmailAddress), response);
 				//channelUserManager.getUser(userEmailAddress).setConnection(response);
 			}
 		} else if (event.getEventType() == CometEvent.EventType.ERROR) {
-			log.info("Error for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
+			log.info("user=" + userEmailAddress + " - Error for session: " + request.getSession(true).getId());
 			synchronized(userConnectionManager) {
 				userConnectionManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
 				//channelUserManager.getUser(userEmailAddress).setConnection(null);
@@ -112,7 +112,7 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 			event.close();
 		} else if (event.getEventType() == CometEvent.EventType.END) {
 			// Completes a long-polling cycle. The client is designed to start another cycle
-			log.info("End for session: " + request.getSession(true).getId() + ", user=" + userEmailAddress);
+			log.info("user=" + userEmailAddress + " - End for session: " + request.getSession(true).getId());
 			synchronized(userConnectionManager) {
 				userConnectionManager.removeUserConnection(channelUserManager.getUser(userEmailAddress));
 				//channelUserManager.getUser(userEmailAddress).setConnection(null);
@@ -124,29 +124,23 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 	private void processClientActionRequest(CometEvent event) throws IOException {
 		HttpServletRequest request = event.getHttpServletRequest();
 		String action = request.getParameter("action");
-
+		String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 		
 		if (ChatClientAction.SEND.equals(action)) {
-			log.info("Handle chat request");
+			log.info("user=" + userEmailAddress + " - Chat request for session: " + request.getSession(true).getId());
 			String chatMessageStr = request.getParameter("chatMessage");
 			if (chatMessageStr != null && !"".equals(chatMessageStr)) {
-				log.info("chatMessageStr=" + chatMessageStr);
-				String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 				User user = channelUserManager.getUser(userEmailAddress);
-				//channelMessageManager.addMessage(chatMessageStr, Calendar.getInstance().getTime(), user);
-				ChatMessage chatMessage = 
-						new ChatMessage(chatMessageStr, Calendar.getInstance().getTime(), user, ++messageId);
-				messageSender.consume(chatMessage);
+				messageSender.consume(chatMessageStr, user);
 			} else {
 				log.info("chatMessageStr=<blank>");
 			}
 		}
 		else if (ChatClientAction.POLL.equals(action)) {
-			log.info("Handle polling request");
+			log.info("user=" + userEmailAddress + " - Poll request for session: " + request.getSession(true).getId());
 			String lastMessageIdStr = request.getParameter("lastMessageId");
 			if (lastMessageIdStr != null && !"".equals(lastMessageIdStr)) {
 				int lastMessageId = Integer.parseInt(lastMessageIdStr);
-				String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 				User user = channelUserManager.getUser(userEmailAddress);
 				user.setLastMessageId(lastMessageId);
 				if (lastMessageId == -1) {
@@ -155,7 +149,5 @@ public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 			}
 		}
 	}
-	
-	private static int messageId = 0;
 
 }

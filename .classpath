@@ -5,8 +5,8 @@
 	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/jsp" path="src/main/webapp/jsp"/>
 	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/js" path="src/main/webapp/js"/>
 	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/css" path="src/main/webapp/css"/>
-	<classpathentry including="applicationContext.xml|log4j.properties" kind="src" output="target/ChatApp-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry including="*.properties|*.xml" kind="src" output="target/ChatApp-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="*.xml" kind="src" path="src/main/webapp/WEB-INF"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<attributes>
@@ -18,5 +18,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="output" path="target/ChatApp-1.0-SNAPSHOT/WEB-INF/classes"/>
 </classpath>

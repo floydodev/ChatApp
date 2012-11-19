@@ -2,6 +2,7 @@ package chat.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,12 +39,15 @@ public class BasicMessengerService implements MessengerService {
 	/**
 	 * Add message for sending.
 	 */
-	public void consume(ChatMessage message) {
+	public void consume(String messageText, User user) {
 		synchronized (messages) {
+			ChatMessage message = new ChatMessage(messageText, Calendar.getInstance().getTime(), user, ++messageId);
 			messages.put(message.getMessageId(), message);
 			messages.notify();
 		}
 	}
+	
+	private static int messageId = 0;
 	
 	public void snapshot() {
 		// do nothing.

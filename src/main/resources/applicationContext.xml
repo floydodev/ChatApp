@@ -55,6 +55,7 @@
 		<property name="maxActive" value="5"/>
 	</bean>
 		 
+		 <!--  test -->
 	<!--  <bean id="channelAdminManager" class="chat.service.ChannelAdminManager" >
 	 	<constructor-arg ref="channelDAO"/>
 	 </bean> -->

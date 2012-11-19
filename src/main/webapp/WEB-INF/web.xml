@@ -30,7 +30,7 @@
     
     <servlet>
         <servlet-name>ChatMessageServlet</servlet-name>
-        <servlet-class>chat.servlet.ChatMessageServlet</servlet-class>
+        <servlet-class>chat.servlet.ChatMessageServletRefactored</servlet-class>
       <!--   <load-on-startup>1</load-on-startup> -->
     </servlet>
     <servlet-mapping>

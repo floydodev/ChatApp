@@ -41,8 +41,8 @@ public class ChatMessage {
 
 	@Override
 	public String toString() {
-		return "ChatMessage [text=" + text + ", timestamp=" + timestamp
-				+ ", user=" + user + ", messageId=" + messageId + "]";
+		return "[messageId=" + messageId + ", text=" + text + ", timestamp=" + timestamp
+				+ ", user=" + user.getEmailAddress() + "]";
 	}
 	
 //	@Override

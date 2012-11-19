@@ -12,6 +12,7 @@ import chat.model.User;
 public class ChannelMessageManager {
 	
 	private ChannelDAO channelDAO;
+	private boolean hasNewMessages = false;
 	
 	public ChannelMessageManager(ChannelDAO channelDAO) {
 		this.channelDAO = channelDAO;
@@ -22,6 +23,7 @@ public class ChannelMessageManager {
 	}
 
 	public void addMessage(String channelId, String message, Date date, User user) {
+		hasNewMessages  = true;
 		channelDAO.addMessage(channelId, message, date, user);
 	}
 	
@@ -65,6 +67,14 @@ public class ChannelMessageManager {
 			messageMap = channelDAO.getMessagesSince(channelId, sinceMessageId);
 		}
 		return messageMap;
+	}
+	
+	public boolean hasNewMessages() {
+		return hasNewMessages;
+	}
+	
+	public void newMessagesProcessed() {
+		this.hasNewMessages = false;
 	}
 	
 	public Channel getChannel() {

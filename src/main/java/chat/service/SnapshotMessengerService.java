@@ -2,6 +2,7 @@ package chat.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -42,13 +43,15 @@ public class SnapshotMessengerService implements MessengerService {
 		}
 	}
 	
-	public void consume(ChatMessage message) {
+	public void consume(String messageText, User user) {
 		synchronized(messagePayloadMap) {
+			ChatMessage message = new ChatMessage(messageText, Calendar.getInstance().getTime(), user, ++messageId);
 			messagePayloadMap.put(message.getMessageId(), message);
 			messagePayloadMap.notify();
 		}
-
 	}
+	
+	private static int messageId = 0;
 	
 	public void snapshot() {
 		synchronized(messagePayloadMap) {
@@ -110,11 +113,13 @@ public class SnapshotMessengerService implements MessengerService {
 							user.setLastMessageId(latestMessageId);
 							PrintWriter writer = userConnectionManager.getConnection(user).getWriter();
 							Gson gson = new Gson();
-							String jsonString = gson.toJson(pendingMessages); 
-							log.info("Sending json message: " + jsonString + " to user:" + user.getEmailAddress());
+							String jsonString = gson.toJson(pendingMessages);
 							writer.println(jsonString);
 							writer.flush();
 							writer.close();	/* the response will not be sent until the writer is closed */
+							for (Map.Entry <Integer, ChatMessage> entry : pendingMessages.entrySet()) {
+								log.info("user=" + user.getEmailAddress() + " - Sent: " + entry.getValue());
+							}
 						}
 					} catch (IOException e) {
 						log.error("IOExeption sending message", e);
