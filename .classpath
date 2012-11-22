@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/java"/>
 	<classpathentry including="*.html" kind="src" output="target/ChatApp-1.0-SNAPSHOT/html" path="src/main/webapp/html"/>
-	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/jsp" path="src/main/webapp/jsp"/>
 	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/js" path="src/main/webapp/js"/>
 	<classpathentry kind="src" output="target/ChatApp-1.0-SNAPSHOT/css" path="src/main/webapp/css"/>
 	<classpathentry including="*.properties|*.xml" kind="src" output="target/ChatApp-1.0-SNAPSHOT/WEB-INF/classes" path="src/main/resources"/>
