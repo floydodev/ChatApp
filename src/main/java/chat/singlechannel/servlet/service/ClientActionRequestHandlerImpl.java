@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chat.servlet.service.ClientActionRequestHandler;
-import chat.singlechannel.dao.ChatRoomDAO;
+import chat.multichannel.servlet.service.ClientActionRequestHandler;
+import chat.singlechannel.dao.ChatRoom;
 import chat.singlechannel.service.messaging.SnapshotMessengerService;
 import chat.util.ChatClientAction;
 
@@ -15,10 +15,10 @@ public class ClientActionRequestHandlerImpl implements
 	
 	private static final Log log = LogFactory.getLog(ClientActionRequestHandlerImpl.class);
 
-	private ChatRoomDAO userManager;
+	private ChatRoom userManager;
 	private SnapshotMessengerService messengerService;
 	
-	public ClientActionRequestHandlerImpl(ChatRoomDAO channelUserManager, 
+	public ClientActionRequestHandlerImpl(ChatRoom channelUserManager, 
 											SnapshotMessengerService messengerService) {
 		this.userManager = channelUserManager;
 		this.messengerService = messengerService;
@@ -41,13 +41,13 @@ public class ClientActionRequestHandlerImpl implements
 			String lastMessageIdStr = request.getParameter("lastMessageId");
 			if (lastMessageIdStr != null && !"".equals(lastMessageIdStr)) {
 				int lastMessageId = Integer.parseInt(lastMessageIdStr);
-				// We rely on the lastMessageId sent up from the client to achieve reliable messaging
-				// http is unreliable so we
+				// We use on the lastMessageId sent up from the client to achieve reliable messaging
 				userManager.setUserLastMessageId(userEmailAddress, lastMessageId);
-				if (lastMessageId == -1) {
-					messengerService.snapshot();
-				}
 			}
+		}
+		else if (ChatClientAction.SNAPSHOT.equals(action)) {
+			log.info("user=" + userEmailAddress + " - Snapshot request for session: " + request.getSession(true).getId());
+			messengerService.snapshot();
 		}
 	}
 	

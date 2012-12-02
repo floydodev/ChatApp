@@ -8,14 +8,13 @@ import org.apache.commons.logging.LogFactory;
 import chat.singlechannel.service.MessageManager;
 import chat.singlechannel.service.UserConnectionManager;
 
-public class SnapshotMessengerService {
+public class SnapshotMessengerService implements Runnable {
 	//implements MessengerService {
 
 	private static final Log log = LogFactory.getLog(SnapshotMessengerService.class);
 	
 	private UserConnectionManager userConnectionManager;
 	private MessageManager messageManager;
-	private boolean snapshotRequested = false;
 	private boolean running = true;
 //	private Applyable<String, PrintWriter> userConnectionApplyable;
 
@@ -36,27 +35,25 @@ public class SnapshotMessengerService {
 	
 	public void consume(String message, String emailAddress) {
 		synchronized(messageManager) {
-			boolean added = messageManager.addMessage(message, Calendar.getInstance().getTime(), emailAddress);
-			if (added) {
-				messageManager.notify();
-			} else {
-				log.error("Problem adding message - check logs");
-			}
+			messageManager.addMessage(message, Calendar.getInstance().getTime(), emailAddress);
+			messageManager.notify();
 		}
 	}
 	
 	public void snapshot() {
 		synchronized(messageManager) {
-			snapshotRequested = true;
+			messageManager.snapshotRequest();
 			messageManager.notify();
 		}
 	}
 
 	public void publish() {
-		while (!messageManager.hasNewMessages() && !snapshotRequested) {
+		while (!messageManager.hasNewMessages() && !messageManager.snapshotRequested()) {
 			try {
 				synchronized (messageManager) {
-					messageManager.wait();	
+					log.info("Wait for someone to notify messageManager");
+					messageManager.wait();
+					log.info("Someone notified messageManager. I'm expecting there should be new messages or someone has requested a snapshot");
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -64,24 +61,22 @@ public class SnapshotMessengerService {
 			}
 		}
 		synchronized (messageManager) {
-
-//			if (!channelMessageManager.hasMessages()) {
-//				// Nothing to publish
-//				return; // can't reach here
-//			}
-			// Now loop through all actice connections and query the repo
-			// to get list of unsent messages for each connection
-			// (based on lastMessageId)
-			// Send any pending messages to any logged in users
-			synchronized(userConnectionManager) {
-				//userConnectionManager.applyConnectionLogic(userConnectionApplyable);
+			//log.info("Handle snapshot or arrival of new message");
+			if (messageManager.hasMessages()) {
+				// Now loop through all active connections and query the repo to get list of unsent messages 
+				// for each connection. Send any pending messages to any logged in users
 				userConnectionManager.applyConnectionLogic();
 			}
-			// update lastMessageId of each user as we send out the messages
-			messageManager.newMessagesProcessed();
-			snapshotRequested = false;
-		}
+			
+			// Reset the flag states that brought us into this synchronized code block so we can go back to a waiting state at the top of the run loop
+			if (messageManager.snapshotRequested()) {
+				messageManager.snapshotRequestComplete();
+			}
+			if (messageManager.hasNewMessages()) {
+				messageManager.newMessagesProcessed();
+			}
 
+		}
 	}
-	
+
 }

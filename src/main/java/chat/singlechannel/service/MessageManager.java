@@ -2,11 +2,15 @@ package chat.singlechannel.service;
 
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.Map;
+import java.util.NavigableMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chat.singlechannel.dao.ChatRoomDAO;
+import chat.multichannel.model.ChatMessage;
+import chat.singlechannel.dao.ChatRoom;
+import chat.singlechannel.dto.Message;
 import chat.util.MessageIdFountain;
 import chat.util.MessageIdFountainAtomicIntImpl;
 
@@ -15,8 +19,9 @@ import com.google.gson.Gson;
 public class MessageManager {
 	
 	private static final Log log = LogFactory.getLog(MessageManager.class);
-	private ChatRoomDAO chatRoomDAO;
+	private ChatRoom chatRoomDAO;
 	private boolean hasNewMessages = false;
+	private boolean snapshotRequested = false;
 	private MessageIdFountain messageIdFountain = null;
 	
 //	public MessageManagerImpl(OldChatRoomIntf chatRoomDAO) {
@@ -24,7 +29,7 @@ public class MessageManager {
 //		this.messageIdFountain = new MessageIdFountainAtomicIntImpl();
 //	}
 
-	public MessageManager(ChatRoomDAO chatRoomDAO) {
+	public MessageManager(ChatRoom chatRoomDAO) {
 		this.chatRoomDAO = chatRoomDAO;
 		this.messageIdFountain = new MessageIdFountainAtomicIntImpl();
 	}
@@ -32,20 +37,9 @@ public class MessageManager {
 	/* (non-Javadoc)
 	 * @see chat.lod.singlechannel.service.MessageManagerIntf#addMessage(java.lang.String, java.util.Date, java.lang.String)
 	 */
-	public boolean addMessage(String message, Date date, String userEmailAddress) {
-		hasNewMessages  = true;
-		if (userEmailAddress == null || "".equals(userEmailAddress)) {
-			log.error("Cannot add message: userEmailAddress is not present");
-			return false;
-		}
-		if (message == null || "".equals(message)) {
-			log.error("Cannot add message: messageText is not present");
-			return false;
-		}
-		int id = messageIdFountain.getNextId();
-		return chatRoomDAO.addMessage(message, date, userEmailAddress);
-		// put(id, new ChatMessage(message, date, users.get(userEmailAddress), id)) != null;
-		//chatRoomDAO.addMessage(messageIdFountain.getNextId(), message, date, userEmailAddress);
+	public void addMessage(String message, Date date, String userEmailAddress) {
+		hasNewMessages = true;
+		chatRoomDAO.addMessage(messageIdFountain.getNextId(), message, date, userEmailAddress);
 	}
 	
 	/* (non-Javadoc)
@@ -68,6 +62,18 @@ public class MessageManager {
 	public void newMessagesProcessed() {
 		this.hasNewMessages = false;
 	}
+	
+	public void snapshotRequest() {
+		snapshotRequested = true;
+	}
+	
+	public boolean snapshotRequested() {
+		return snapshotRequested;
+	}
+	
+	public void snapshotRequestComplete() {
+		snapshotRequested = false;
+	}
 //	
 //	public void applyConnectionLogic() {
 //		for (Map.Entry<String, PrintWriter> entry : userConnectionMap.entrySet()) {
@@ -76,11 +82,18 @@ public class MessageManager {
 //	}
 //	
 	public void pushPendingMessages(String userEmailAddress, PrintWriter writer) {
+		NavigableMap<Integer, Message> pendingMessages = chatRoomDAO.getPendingMessages(userEmailAddress);
+		if (pendingMessages == null || pendingMessages.isEmpty()) {
+			return;
+		}
 		Gson gson = new Gson();
-		String jsonString = gson.toJson(chatRoomDAO.getPendingMessages(userEmailAddress));
+		String jsonString = gson.toJson(pendingMessages);
 		writer.println(jsonString);
 		writer.flush();
 		writer.close();
+		for (Map.Entry <Integer, Message> entry : pendingMessages.entrySet()) {
+			log.info("user=" + userEmailAddress + " - Sent: " + entry.getValue());
+		}
 	}
 
 //	public Map<Integer, Message> getMessagesSince(

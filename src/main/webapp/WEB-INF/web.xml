@@ -30,7 +30,7 @@
     
     <servlet>
         <servlet-name>ChatMessageServlet</servlet-name>
-        <servlet-class>chat.servlet.ChatMessageServletRefactored</servlet-class>
+        <servlet-class>chat.singlechannel.servlet.ChatMessageServlet</servlet-class>
       <!--   <load-on-startup>1</load-on-startup> -->
     </servlet>
     <servlet-mapping>
@@ -40,7 +40,7 @@
     
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>chat.servlet.LoginServlet</servlet-class>
+        <servlet-class>chat.singlechannel.servlet.LoginServlet</servlet-class>
        <!--  <load-on-startup>1</load-on-startup> -->
     </servlet>
     <servlet-mapping>
@@ -63,7 +63,7 @@
 	</context-param>
 	<context-param>  
 	  <param-name>contextConfigLocation</param-name>  
-	  <param-value>chat.config.SpringJavaConfig</param-value>  
+	  <param-value>chat.singlechannel.config.SpringJavaConfig</param-value>  
 	</context-param> -->
 	
 	<listener>
@@ -71,6 +71,6 @@
 	</listener>
  
 	<listener>
-		<listener-class>chat.servlet.MySessionAttributeListener</listener-class>
+		<listener-class>chat.util.MySessionAttributeListener</listener-class>
 	</listener>
 </web-app>

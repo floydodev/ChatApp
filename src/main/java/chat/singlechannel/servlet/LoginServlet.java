@@ -14,12 +14,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import chat.singlechannel.dao.ChatRoomDAO;
+import chat.singlechannel.service.UserManager;
 
 public class LoginServlet extends HttpServlet {
 	
 	static private final Log log = LogFactory.getLog(LoginServlet.class);
-	private ChatRoomDAO userManager = null;
+	private UserManager userManager = null;
 	
 	@Override
 	public void init() {
@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
 			// HttpRquestHandler or some interface. I should try it but I don't think it will work with the 
 			// CometProcessor interface needed by Tomcat
 			WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-			userManager = context.getBean("userManager", ChatRoomDAO.class);
+			userManager = context.getBean("userManager", UserManager.class);
 		} catch (Exception e) {
 			log.error(e);
 		}
@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 		String userDisplayName = request.getParameter("userDisplayName");
 		
 		userManager.addUser(userEmailAddress, userDisplayName);
-		log.info("Added user email to session: " + userEmailAddress);
+		log.info("Added this user email to session: " + userEmailAddress);
 		request.getSession(true).setAttribute("user", userEmailAddress);
 		getServletContext().getRequestDispatcher("/html/chatHome.html").forward(request, response);
 	}

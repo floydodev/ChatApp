@@ -4,12 +4,14 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import chat.singlechannel.dto.Message;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import chat.singlechannel.servlet.service.apply.Applyable;
 
 public class UserConnectionManager {
 
-	//private final static Log log = LogFactory.getLog(UserConnectionManager.class);
+	private final static Log log = LogFactory.getLog(UserConnectionManager.class);
 	
 	private Map<String, PrintWriter> userConnectionMap;
 	private Applyable<String, PrintWriter> userConnectionApplyable;
@@ -19,18 +21,20 @@ public class UserConnectionManager {
 		this.userConnectionApplyable = userConnectionApplyable;
 	}
 
-	public boolean removeUserConnection(String userEmailAddress) {
-		return userConnectionMap.remove(userEmailAddress) != null;
+	public synchronized void removeUserConnection(String userEmailAddress) {
+		userConnectionMap.remove(userEmailAddress);
 	}
 
-	public boolean addUserConnection(String userEmailAddress, PrintWriter connection) {
-		return userConnectionMap.put(userEmailAddress, connection) != null;
+	public synchronized void addUserConnection(String userEmailAddress, PrintWriter connection) {
+		userConnectionMap.put(userEmailAddress, connection);
 	}
 
-	public void applyConnectionLogic() {
+	public synchronized void applyConnectionLogic() {
+		log.info("Start - Run through all connections and pass to userConnectionApplyable");
 		for (Map.Entry<String, PrintWriter> entry : userConnectionMap.entrySet()) {
 			userConnectionApplyable.each(entry.getKey(), entry.getValue());
 		}
+		log.info("Finish"); 
 	}
 	
 }

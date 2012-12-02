@@ -15,7 +15,16 @@ public class Message {
 	private User user;
 	private int messageId;
 	
-	public Message(String text, Date timestamp, User user, int messageId) {
+	public Message(int messageId, String text, Date timestamp, User user) {
+		if (text == null) {
+			throw new IllegalArgumentException("Text is null. Cannot construct Message");
+		}
+		if (timestamp == null) {
+			throw new IllegalArgumentException("Timestamp is null. Cannot construct Message");
+		}
+		if (user == null) {
+			throw new IllegalArgumentException("User is null. Cannot construct Message");
+		}
 		this.text = text;
 		this.timestamp = timestamp;
 		this.user = user;
@@ -23,21 +32,21 @@ public class Message {
 		log.info("Message created here with messageId=" + messageId); 
 	}
 
-//	public int getMessageId() {
-//		return messageId;
-//	}
-//
-//	public String getText() {
-//		return text;
-//	}
-//
-//	public Date getTimestamp() {
-//		return timestamp;
-//	}
-//
-//	public User getUser() {
-//		return user;
-//	}
+	public int getMessageId() {
+		return messageId;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public User getUser() {
+		return user;
+	}
 
 	@Override
 	public String toString() {
@@ -45,44 +54,44 @@ public class Message {
 				+ ", user=" + user.getEmailAddress() + "]";
 	}
 	
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + messageId;
-//		result = prime * result + ((text == null) ? 0 : text.hashCode());
-//		result = prime * result
-//				+ ((timestamp == null) ? 0 : timestamp.hashCode());
-//		result = prime * result + ((user == null) ? 0 : user.hashCode());
-//		return result;
-//	}
-//
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj)
-//			return true;
-//		if (obj == null)
-//			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//		ChatMessage other = (ChatMessage) obj;
-//		if (messageId != other.messageId)
-//			return false;
-//		if (text == null) {
-//			if (other.text != null)
-//				return false;
-//		} else if (!text.equals(other.text))
-//			return false;
-//		if (timestamp == null) {
-//			if (other.timestamp != null)
-//				return false;
-//		} else if (!timestamp.equals(other.timestamp))
-//			return false;
-//		if (user == null) {
-//			if (other.user != null)
-//				return false;
-//		} else if (!user.equals(other.user))
-//			return false;
-//		return true;
-//	}	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + messageId;
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result
+				+ ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Message other = (Message) obj;
+		if (messageId != other.messageId)
+			return false;
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		} else if (!text.equals(other.text))
+			return false;
+		if (timestamp == null) {
+			if (other.timestamp != null)
+				return false;
+		} else if (!timestamp.equals(other.timestamp))
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		return true;
+	}	
 }

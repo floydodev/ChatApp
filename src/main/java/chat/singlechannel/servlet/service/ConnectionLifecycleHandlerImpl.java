@@ -10,7 +10,7 @@ import org.apache.catalina.comet.CometEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chat.servlet.service.ConnectionLifecycleHandler;
+import chat.multichannel.servlet.service.ConnectionLifecycleHandler;
 import chat.singlechannel.service.UserConnectionManager;
 
 
@@ -32,25 +32,17 @@ public class ConnectionLifecycleHandlerImpl implements ConnectionLifecycleHandle
 			// Starts the long-polling cycle
 			log.info("user=" + userEmailAddress + " - Begin for session: " + request.getSession(true).getId());
 			event.setTimeout(900*1000*1000); /* timeout is 15 minutes */
-			synchronized(userConnectionManager) {
-				boolean added = userConnectionManager.addUserConnection(userEmailAddress, response.getWriter());
-				if (!added) {
-					log.error("Couldn't add connection for user:" + userEmailAddress);
-					// should we throw an exception at this point?
-				}
-			}
+			// User connection method calls are synchronized 
+			userConnectionManager.addUserConnection(userEmailAddress, response.getWriter());
 		} else if (event.getEventType() == CometEvent.EventType.ERROR) {
 			log.info("user=" + userEmailAddress + " - Error for session: " + request.getSession(true).getId());
-			synchronized(userConnectionManager) {
-				userConnectionManager.removeUserConnection(userEmailAddress);
-			}
+			// User connection method calls are synchronized
+			userConnectionManager.removeUserConnection(userEmailAddress);
 			event.close();
 		} else if (event.getEventType() == CometEvent.EventType.END) {
 			// Completes a long-polling cycle. The client is designed to start another cycle
 			log.info("user=" + userEmailAddress + " - End for session: " + request.getSession(true).getId());
-			synchronized(userConnectionManager) {
-				userConnectionManager.removeUserConnection(userEmailAddress);
-			}
+			userConnectionManager.removeUserConnection(userEmailAddress);
 			event.close();
 		}
 		

@@ -1,17 +1,16 @@
 package chat.singlechannel.service;
 
-import chat.singlechannel.dao.ChatRoomDAO;
+import chat.singlechannel.dao.ChatRoom;
 
 public class UserManager {
 	
-	private ChatRoomDAO chatRoomDAO;
+	private ChatRoom chatRoomDAO;
 	
-	public UserManager(ChatRoomDAO chatRoomDAO) {
+	public UserManager(ChatRoom chatRoomDAO) {
 		this.chatRoomDAO = chatRoomDAO;
 	}
 	
 	public void addUser(String emailAddress, String displayName) {
-		chatRoomDAO.addUser(emailAddress, displayName);
 		chatRoomDAO.addUser(emailAddress, displayName);
 	}
 	

@@ -9,10 +9,10 @@ public class User {
 	//private HttpServletResponse connection;
 	private int lastMessageId;
 
-	public User(String displayName, String emailAddress) { //, HttpServletResponse connection) {
+	public User(String emailAddress, String displayName) { //, HttpServletResponse connection) {
 		super();
-		this.displayName = displayName;
 		this.emailAddress = emailAddress;
+		this.displayName = displayName;
 		// this.connection = connection;
 	}
 
