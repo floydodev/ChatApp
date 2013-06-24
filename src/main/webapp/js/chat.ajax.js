@@ -56,7 +56,7 @@ function receive(request) {
 		showMessage(chatMessage);
 		$('#div_chat').scrollTop($('#div_chat')[0].scrollHeight);
 	});
-	send('connect');	/* current request is dead, must create a new one */
+	send('poll');	/* current request is dead, must create a new one */
 }
 
 function handleSubmit() {
@@ -103,8 +103,12 @@ function send(arg) {
 		lastShownMessageId = 0;
 		request.send("action=send&chatMessage=" + arg);
 	}
-	else if (arg.substring(0,7)=="connect") {
-		
+	else if (arg.substring(0,7)=="poll") {
+
 		request.send("action=poll&lastMessageId=" + lastShownMessageId);
+	}
+	else if (arg.substring(0,8)=="snapshot") {
+		
+		request.send("action=snapshot");
 	}
 }

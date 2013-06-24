@@ -90,7 +90,7 @@ function new_send_message() {
 			if (lastShownMessageId == -1) {
 				lastShownMessageId = 0;
 			}
-			console.log("Call"
+			console.log("Call longPollChatText");
 			longPollChatText();
 		}
 	);
