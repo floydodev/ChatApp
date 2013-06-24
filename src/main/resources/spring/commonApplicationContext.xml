@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+							http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+							http://www.springframework.org/schema/context 
+							http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	xmlns:context="http://www.springframework.org/schema/context">
+
+	<!-- <context:annotation-config/> -->
+
+	<!-- data_source_class=org.apache.commons.dbcp.BasicDataSource -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/chatapp" />
+		<property name="username" value="root" />
+		<property name="password" value="meanT1meMk" />
+		<property name="initialSize" value="2" />
+		<property name="maxActive" value="5" />
+	</bean>
+
+	<!-- <context:component-scan base-package="chat" /> -->
+
+	<!-- BEGIN: Single Channel ChatApp beans -->
+
+	<bean id="messagesDAO" class="chat.singlechannel.dao.MessagesDAOInMemoryImpl" />
+
+	<bean id="usersDAO" class="chat.singlechannel.dao.UsersDAOJdbcImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="chatRoom" class="chat.singlechannel.dao.ChatRoomImpl">
+		<constructor-arg ref="messagesDAO" />
+		<constructor-arg ref="usersDAO" />
+	</bean>
+
+	<bean id="userManager" class="chat.singlechannel.service.UserManager">
+		<constructor-arg ref="chatRoom" />
+	</bean>
+
+	<bean id="messageManager" class="chat.singlechannel.service.MessageManager">
+		<constructor-arg ref="chatRoom" />
+		<constructor-arg>
+			<bean class="chat.util.MessageIdFountainAtomicIntJdbcImpl">
+				<property name="dataSource" ref="dataSource" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="userConnectionApplyable"
+		class="chat.singlechannel.servlet.service.apply.UserConnectionApplyable">
+		<constructor-arg ref="messageManager" />
+	</bean>
+
+	<bean id="userConnectionManager" class="chat.singlechannel.service.UserConnectionManager">
+		<constructor-arg ref="userConnectionApplyable" />
+	</bean>
+
+	<bean id="messengerService"
+		class="chat.singlechannel.service.messaging.SnapshotMessengerService">
+		<constructor-arg ref="userConnectionManager" />
+		<constructor-arg ref="messageManager" />
+	</bean>
+
+	<bean id="clientActionRequestHandler"
+		class="chat.singlechannel.servlet.service.impl.ClientActionRequestHandlerImpl">
+		<constructor-arg ref="chatRoom" />
+		<constructor-arg ref="messengerService" />
+	</bean>
+
+	<bean id="connectionLifecycleHandler"
+		class="chat.singlechannel.servlet.service.impl.ConnectionLifecycleHandlerImpl">
+		<constructor-arg ref="userConnectionManager" />
+	</bean>
+
+	<!-- END: Single Channel ChatApp beans -->
+
+	<!-- BEGIN: Multi Channel ChatApp beans -->
+
+	<!-- <bean id="defaultChannel" class="chat.model.Channel"/> <bean id="channelDAO" 
+		class="chat.dao.ChannelDAOInMemoryImpl"> <constructor-arg ref="defaultChannel"/> 
+		</bean> <bean id="channelUserManager" class="chat.service.ChannelUserManager" 
+		> <constructor-arg ref="channelDAO"/> </bean> <bean id="channelMessageManager" 
+		class="chat.service.ChannelMessageManager"> <constructor-arg ref="channelDAO"/> 
+		</bean> <bean id="userConnectionManager" class="chat.service.UserConnectionManager" 
+		/> <bean id="messengerService" class="chat.service.SnapshotMessengerServiceRefactored"> 
+		<constructor-arg ref="userConnectionManager"/> <constructor-arg ref="channelMessageManager"/> 
+		</bean> <bean id="clientActionRequestHandler" class="chat.servlet.service.ClientActionRequestHandlerImpl"> 
+		<constructor-arg ref="channelUserManager"/> <constructor-arg ref="messengerService" 
+		/> </bean> <bean id="connectionLifecycleHandler" class="chat.servlet.service.ConnectionLifecycleHandlerImpl"> 
+		<constructor-arg ref="channelUserManager"/> <constructor-arg ref="userConnectionManager"/> 
+		</bean> -->
+
+	<!-- END: Multi Channel ChatApp beans -->
+
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"> -->
+
+
+</beans>

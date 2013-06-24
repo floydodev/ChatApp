@@ -2,3 +2,5 @@ target/
 .DS_Store
 chatapp.log
 chatapp.log.1
+.settings
+photo.JPG

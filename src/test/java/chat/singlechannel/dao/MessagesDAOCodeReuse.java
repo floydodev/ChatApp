@@ -12,12 +12,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chat.singlechannel.dto.Message;
+import chat.singlechannel.dao.MessagesDAO;
 
-public class MessagesDAOTest {
+public class MessagesDAOCodeReuse {
 	
 	private MessagesDAO messagesDAO;
 	
-	public MessagesDAOTest(MessagesDAO messagesDAO) {
+	public MessagesDAOCodeReuse(MessagesDAO messagesDAO) {
 		this.messagesDAO = messagesDAO;
 	}
 
@@ -31,13 +32,13 @@ public class MessagesDAOTest {
 		//
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	//@Test(expected=IllegalArgumentException.class)
 	public void put_Fails_given_NullArgs() {
 		messagesDAO.put(1, null);
 	}
 
 	
-	@Test
+	//@Test
 	public void put_Succeeds_given_ValidArgs() {
 		assertThat(messagesDAO.isEmpty(), equalTo(true));
 		Message message = mock(Message.class);
@@ -46,12 +47,12 @@ public class MessagesDAOTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void isEmpty_True_given_NewMessagesDAO() {
 		assertThat(messagesDAO.isEmpty(), equalTo(true));
 	}
 
-	@Test
+	//@Test
 	public void lastKey_Gives_KeyOfNthMessage() {
 		Message message = mock(Message.class);
 		int n = 10;
@@ -61,18 +62,18 @@ public class MessagesDAOTest {
 		assertThat(messagesDAO.lastKey(), equalTo(n));
 	}
 
-	@Test
+	//@Test
 	public void lastKey_ReturnsZero_GivenNoMessages() {
 		assertThat(messagesDAO.lastKey(), equalTo(0));
 	}
 
-	@Test
+	//@Test
 	public void tailMap_ReturnsEmptyMap_GivenNoMessage() {
 		NavigableMap<Integer, Message> emptyMap = new TreeMap<Integer, Message>();
 		assertThat(messagesDAO.tailMap(5), equalTo(emptyMap));
 	}
 	
-	@Test
+	//@Test
 	public void tailMap_ReturnsAllMessagesSince_GivenId() {
 		Message message = mock(Message.class);
 		int numMessages = 15;

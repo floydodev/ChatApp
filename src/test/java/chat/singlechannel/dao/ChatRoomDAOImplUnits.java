@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import chat.singlechannel.dao.ChatRoom;
@@ -25,6 +26,7 @@ import chat.singlechannel.dto.Message;
 import chat.singlechannel.dto.User;
 import chat.singlechannel.old.ChatRoomDAOImpl;
 
+@Ignore
 public class ChatRoomDAOImplUnits {
 	
 	//@Rule public JUnitRuleMockery context = new JUnitRuleMockery();

@@ -15,9 +15,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import chat.multichannel.servlet.service.ClientActionRequestHandler;
-import chat.multichannel.servlet.service.ConnectionLifecycleHandler;
 import chat.singlechannel.service.messaging.SnapshotMessengerService;
+import chat.singlechannel.servlet.service.ClientActionRequestHandler;
+import chat.singlechannel.servlet.service.ConnectionLifecycleHandler;
+import chat.singlechannel.servlet.service.impl.ClientActionRequestHandlerImpl;
+import chat.singlechannel.servlet.service.impl.ConnectionLifecycleHandlerImpl;
 
 public class ChatMessageServlet extends HttpServlet implements CometProcessor {
 

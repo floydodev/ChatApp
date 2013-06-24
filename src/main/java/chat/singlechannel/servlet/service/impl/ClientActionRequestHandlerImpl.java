@@ -1,17 +1,16 @@
-package chat.singlechannel.servlet.service;
+package chat.singlechannel.servlet.service.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chat.multichannel.servlet.service.ClientActionRequestHandler;
 import chat.singlechannel.dao.ChatRoom;
 import chat.singlechannel.service.messaging.SnapshotMessengerService;
+import chat.singlechannel.servlet.service.ClientActionRequestHandler;
 import chat.util.ChatClientAction;
 
-public class ClientActionRequestHandlerImpl implements
-		ClientActionRequestHandler {
+public class ClientActionRequestHandlerImpl implements ClientActionRequestHandler {
 	
 	private static final Log log = LogFactory.getLog(ClientActionRequestHandlerImpl.class);
 
@@ -24,6 +23,9 @@ public class ClientActionRequestHandlerImpl implements
 		this.messengerService = messengerService;
 	}
 
+	/* (non-Javadoc)
+	 * @see chat.singlechannel.servlet.service.ClientActionRequestHandler#handle(javax.servlet.http.HttpServletRequest, java.lang.String)
+	 */
 	public void handle(HttpServletRequest request, String action) {
 		String userEmailAddress = (String)request.getSession(true).getAttribute("user");
 
@@ -37,7 +39,7 @@ public class ClientActionRequestHandlerImpl implements
 			}
 		}
 		else if (ChatClientAction.POLL.equals(action)) {
-			log.info("user=" + userEmailAddress + " - Poll request for session: " + request.getSession(true).getId());
+			log.info("user=" + userEmailAddress + " - Poll request received for session: " + request.getSession(true).getId());
 			String lastMessageIdStr = request.getParameter("lastMessageId");
 			if (lastMessageIdStr != null && !"".equals(lastMessageIdStr)) {
 				int lastMessageId = Integer.parseInt(lastMessageIdStr);

@@ -1,26 +1,19 @@
 package chat.singlechannel.dao;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.NavigableMap;
-import java.util.TreeMap;
-
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import chat.singlechannel.dto.Message;
-
+@Ignore
 public class MessagesDAOInMemoryImplTest {
 
-	private MessagesDAOTest messagesDAOTest;
+	private MessagesDAOCodeReuse messagesDAOTest;
 	
 	@Before
 	public void setUp() throws Exception {
 		MessagesDAO messagesDAO = new MessagesDAOInMemoryImpl();
-		messagesDAOTest = new MessagesDAOTest(messagesDAO);
+		messagesDAOTest = new MessagesDAOCodeReuse(messagesDAO);
 	}
 
 	@After

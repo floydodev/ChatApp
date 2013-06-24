@@ -8,7 +8,6 @@ import java.util.NavigableMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import chat.multichannel.model.ChatMessage;
 import chat.singlechannel.dao.ChatRoom;
 import chat.singlechannel.dto.Message;
 import chat.util.MessageIdFountain;
@@ -30,10 +29,14 @@ public class MessageManager {
 //	}
 
 	public MessageManager(ChatRoom chatRoomDAO) {
-		this.chatRoomDAO = chatRoomDAO;
-		this.messageIdFountain = new MessageIdFountainAtomicIntImpl();
+		this(chatRoomDAO, new MessageIdFountainAtomicIntImpl());
 	}
 
+	
+	public MessageManager(ChatRoom chatRoomDAO, MessageIdFountain messageIdFountain) {
+		this.chatRoomDAO = chatRoomDAO;
+		this.messageIdFountain = messageIdFountain;
+	}
 	/* (non-Javadoc)
 	 * @see chat.lod.singlechannel.service.MessageManagerIntf#addMessage(java.lang.String, java.util.Date, java.lang.String)
 	 */

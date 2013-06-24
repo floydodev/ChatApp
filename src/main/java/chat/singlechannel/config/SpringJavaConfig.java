@@ -9,22 +9,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-import chat.multichannel.servlet.service.ClientActionRequestHandler;
-import chat.multichannel.servlet.service.ConnectionLifecycleHandler;
 import chat.singlechannel.dao.ChatRoom;
 import chat.singlechannel.dao.ChatRoomImpl;
 import chat.singlechannel.dao.MessagesDAO;
 import chat.singlechannel.dao.MessagesDAOInMemoryImpl;
-import chat.singlechannel.dao.MessagesDAOJdbcImpl;
 import chat.singlechannel.dao.UsersDAO;
 import chat.singlechannel.dao.UsersDAOJdbcImpl;
 import chat.singlechannel.service.MessageManager;
 import chat.singlechannel.service.UserConnectionManager;
 import chat.singlechannel.service.UserManager;
 import chat.singlechannel.service.messaging.SnapshotMessengerService;
-import chat.singlechannel.servlet.service.ClientActionRequestHandlerImpl;
-import chat.singlechannel.servlet.service.ConnectionLifecycleHandlerImpl;
+import chat.singlechannel.servlet.service.ClientActionRequestHandler;
+import chat.singlechannel.servlet.service.ConnectionLifecycleHandler;
 import chat.singlechannel.servlet.service.apply.UserConnectionApplyable;
+import chat.singlechannel.servlet.service.impl.ClientActionRequestHandlerImpl;
+import chat.singlechannel.servlet.service.impl.ConnectionLifecycleHandlerImpl;
 
 @Configuration
 @ImportResource("classpath:applicationContext.xml")
